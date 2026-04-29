@@ -160,16 +160,29 @@ QUIZ_BANK = {
 # ==========================================
 
 if st.session_state.page == "home":
-    st.markdown("<div class='welcome-banner'><h1>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
+    # ബാനറിന്റെ സൈസ് അല്പം കുറച്ചു
+    st.markdown("<div class='welcome-banner' style='padding:20px;'><h1 style='font-size:1.8em;'>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
+    
     exams = ["Research Officer", "CSIR NET", "HSA Maths", "HSST Stat", "HSST Maths"]
-    cols = st.columns(3)
+    
+    # ലാപ്ടോപ്പിൽ 3 കോളവും മൊബൈലിൽ 2 കോളവും വരാൻ (Small trick with columns)
+    # ഇത് മൊബൈൽ സ്ക്രീനിൽ ഫുൾ ആയി ഒതുങ്ങാൻ സഹായിക്കും
+    cols = st.columns(2) # മൊബൈലിനായി 2 കോളങ്ങൾ മാത്രം ഉപയോഗിക്കുന്നു
+    
     for i, ex in enumerate(exams):
-        with cols[i % 3]:
-            st.markdown(f"<div class='custom-card'><h3>{ex}</h3></div>", unsafe_allow_html=True)
-            if st.button(f"Start Learning {ex}", key=ex):
+        # വരികൾ മാറി മാറി വരാൻ i % 2 ഉപയോഗിക്കുന്നു
+        with cols[i % 2]:
+            st.markdown(f"""
+                <div class='custom-card' style='padding: 15px; margin-bottom: 10px;'>
+                    <h4 style='font-size: 1em;'>{ex}</h4>
+                </div>
+            """, unsafe_allow_html=True)
+            if st.button(f"Start {ex.split()[-1]}", key=ex, use_container_width=True):
                 st.session_state.current_exam = ex
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
+
+# --- ബാക്കിയുള്ള കോഡുകൾ (exam_detail, subject_options, etc.) മാറ്റമില്ലാതെ തുടരുക ---
 
 elif st.session_state.page == "exam_detail":
     st.title(f"📍 {st.session_state.current_exam}")
