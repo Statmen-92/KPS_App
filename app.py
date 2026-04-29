@@ -160,21 +160,24 @@ QUIZ_BANK = {
 # ==========================================
 
 if st.session_state.page == "home":
-    # ബാനറിന്റെ സൈസ് അല്പം കുറച്ചു
     st.markdown("<div class='welcome-banner' style='padding:20px;'><h1 style='font-size:1.8em;'>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
     
     exams = ["Research Officer", "CSIR NET", "HSA Maths", "HSST Stat", "HSST Maths"]
     
-    # ലാപ്ടോപ്പിൽ 3 കോളവും മൊബൈലിൽ 2 കോളവും വരാൻ (Small trick with columns)
-    # ഇത് മൊബൈൽ സ്ക്രീനിൽ ഫുൾ ആയി ഒതുങ്ങാൻ സഹായിക്കും
-    cols = st.columns(2) # മൊബൈലിനായി 2 കോളങ്ങൾ മാത്രം ഉപയോഗിക്കുന്നു
+    # സ്ക്രീൻ വിഡ്ത്ത് അനുസരിച്ച് ലാപ്ടോപ്പിൽ 3-ഉം മൊബൈലിൽ 2-ഉം കോളങ്ങൾ സെറ്റ് ചെയ്യാം
+    # സാധാരണയായി ലാപ്ടോപ്പിൽ വിൻഡോ വലുതായതുകൊണ്ട് 3 കോളങ്ങൾ മനോഹരമായിരിക്കും
+    import streamlit as st
+
+    # ലാപ്ടോപ്പിലും മൊബൈലിലും ഒരേപോലെ കാണാൻ 2 കോളം ഗ്രിഡ് ആണ് ഏറ്റവും സുരക്ഷിതം
+    # അല്ലെങ്കിൽ താഴെ പറയുന്ന രീതി പരീക്ഷിക്കൂ
+    cols = st.columns(2) 
     
     for i, ex in enumerate(exams):
-        # വരികൾ മാറി മാറി വരാൻ i % 2 ഉപയോഗിക്കുന്നു
+        # i % 2 ഉപയോഗിച്ച് ഓരോ വരിയിലും രണ്ട് ബട്ടണുകൾ വീതം വരുന്നു
         with cols[i % 2]:
             st.markdown(f"""
-                <div class='custom-card' style='padding: 15px; margin-bottom: 10px;'>
-                    <h4 style='font-size: 1em;'>{ex}</h4>
+                <div class='custom-card' style='padding: 15px; margin-bottom: 10px; min-height: 120px;'>
+                    <h4 style='font-size: 0.9em; margin-bottom: 10px;'>{ex}</h4>
                 </div>
             """, unsafe_allow_html=True)
             if st.button(f"Start {ex.split()[-1]}", key=ex, use_container_width=True):
