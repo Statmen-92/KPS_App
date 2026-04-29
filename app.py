@@ -120,12 +120,12 @@ QUIZ_BANK = {
                 (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "2.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E2.png")),
                 (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "3.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E3.png")),
                 (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "4.png"), "D", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E4.png")),
-                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "5.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E5.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "5.png"), "B", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E5.png")),
                 (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "6.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E6.png")),
-                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "7.png"), "B", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E7.png")),
-                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "8.png"), "D", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E8.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "7.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E7.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "8.png"), "B", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E8.png")),
                 (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "9.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E9.png")),
-                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "10.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E10.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "10.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E10.png")),
             ]
         }
     },
