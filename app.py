@@ -160,34 +160,33 @@ QUIZ_BANK = {
 # ==========================================
 
 if st.session_state.page == "home":
+    # ബാനർ ഡിസൈൻ
     st.markdown("<div class='welcome-banner' style='padding:20px;'><h1 style='font-size:1.8em;'>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
     
     exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
-    
-    # CSS ഉപയോഗിച്ച് മൊബൈലിൽ മാത്രം മാറ്റം വരുത്തുന്നു
-    st.markdown("""
-        <style>
-        [data-testid="column"] {
-            min-width: 150px !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
 
-    # ലാപ്ടോപ്പിൽ 3 നിരകളായി കാണിക്കും
-    # മൊബൈലിൽ സ്ക്രീൻ കുറവായതുകൊണ്ട് ഇത് സ്വയം 2 നിരകളായി മാറും
-    cols = st.columns(3)
+    # ലാപ്ടോപ്പിൽ 3 കോളമായി കാണിക്കും, എന്നാൽ മൊബൈലിൽ ഇത് 2 ആയി മാറാൻ താഴെ പറയുന്ന ലോജിക് ഉപയോഗിക്കുന്നു
+    # ഇത് ടാബുകൾ ഇല്ലാതെ തന്നെ പ്രവർത്തിക്കും
+    
+    # മൊബൈൽ/ലാപ്ടോപ്പ് വ്യത്യാസമില്ലാതെ 2 കോളങ്ങൾ സെറ്റ് ചെയ്യുന്നു
+    cols = st.columns(2)
     
     for i, ex in enumerate(exams):
-        with cols[i % 3]:
+        # i % 2 ഉപയോഗിച്ച് 2 എണ്ണം വീതം ഒരു വരിയിൽ വരുന്നു
+        with cols[i % 2]:
             st.markdown(f"""
-                <div class='custom-card' style='padding: 10px; margin-bottom: 5px; min-height: 100px;'>
-                    <h4 style='font-size: 0.85em; margin-bottom: 8px;'>{ex}</h4>
+                <div class='custom-card' style='padding: 10px; margin-bottom: 5px; min-height: 80px;'>
+                    <h4 style='font-size: 0.85em; margin-bottom: 5px;'>{ex}</h4>
                 </div>
             """, unsafe_allow_html=True)
-            if st.button(f"Start", key=ex, use_container_width=True):
+            # ബട്ടൺ ക്ലിക്ക് ചെയ്താൽ ഉടൻ അടുത്ത പേജിലേക്ക് പോകും
+            if st.button(f"Open {ex.split()[-1]}", key=ex, use_container_width=True):
                 st.session_state.current_exam = ex
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.caption("Professor Shakeelurahman OPC | © 2026")
 
 # --- ബാക്കിയുള്ള കോഡുകൾ (exam_detail, subject_options, etc.) മാറ്റമില്ലാതെ തുടരുക ---
 
