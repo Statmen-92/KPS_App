@@ -5,9 +5,22 @@ import os
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
 # --- 2. ADVANCED CUSTOM CSS ---
+# --- 2. ADVANCED CUSTOM CSS ---
 st.markdown("""
     <style>
+    /* ഹെഡർ ഐക്കണുകൾ ഒഴിവാക്കുന്നു */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
     .stApp { background-color: #f0f2f6; }
+    
+    /* മൊബൈലിൽ മുകളിലെ ഗ്യാപ്പ് കുറയ്ക്കാൻ */
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
     .custom-card {
         background-color: white;
         padding: 15px;
@@ -25,7 +38,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 20px;
     }
-    /* ഹോം പേജിലെ ബട്ടണുകളെ കാർഡുകളാക്കി മാറ്റുന്ന സ്റ്റൈൽ */
     div.stButton > button {
         height: 70px !important;
         background-color: white !important;
@@ -46,25 +58,7 @@ st.markdown("""
         color: white !important;
         border: 2px solid #218838 !important;
     }
-    .result-card {
-        background: white;
-        border: 2px solid #28a745;
-        border-radius: 20px;
-        padding: 40px;
-        text-align: center;
-        margin-bottom: 25px;
-    }
-    h1, h2, h3 { color: #1e3c72; }
-    .q-header {
-        background-color: #1e3c72;
-        color: white;
-        padding: 10px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        font-weight: bold;
-        text-align: center;
-        font-size: 1.1em;
-    }
+    /* മറ്റ് സ്റ്റൈലുകൾ തുടരുന്നു... */
     </style>
     """, unsafe_allow_html=True)
 
