@@ -111,45 +111,45 @@ FULL_SYLLABUS = {
     }
 }
 
-# --- 5. QUIZ BANK (FULL STATISTICS & ECONOMICS QUESTIONS) ---
+# --- 5. QUIZ BANK (OLDER FORMAT - MANUAL ENTRY) ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
             "Set 1": [
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "1.png"), "C", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E1.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "2.png"), "A", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E2.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "3.png"), "C", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E3.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "4.png"), "D", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E4.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "5.png"), "A", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E5.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "6.png"), "C", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E6.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "7.png"), "B", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E7.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "8.png"), "D", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E8.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "9.png"), "A", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E9.png")),
-                (os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Questions", "10.png"), "C", os.path.join("Research_Officer", "Statistics", "Module_2", "Set_1", "Explanation", "E10.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "1.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E1.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "2.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E2.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "3.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E3.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "4.png"), "D", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E4.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "5.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E5.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "6.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E6.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "7.png"), "B", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E7.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "8.png"), "D", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E8.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "9.png"), "A", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E9.png")),
+                (os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Questions", "10.png"), "C", os.path.join("Research Officer", "Statistics", "Module 2", "Set 1", "Explanation", "E10.png")),
             ]
         }
     },
     "Economics": {
         "Module I: Micro Economic Theory (4 marks)": {
             "Set 1": [
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "1.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E1.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "2.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E2.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "3.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E3.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "4.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E4.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "5.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E5.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "6.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E6.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "7.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E7.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Questions", "8.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_1", "Explanation", "E8.png")),              
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "1.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E1.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "2.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E2.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "3.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E3.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "4.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E4.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "5.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E5.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "6.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E6.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "7.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E7.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Questions", "8.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 1", "Explanation", "E8.png")),              
             ],
             "Set 2": [
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "10.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E10.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "11.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E11.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "12.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E12.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "13.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E13.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "14.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E14.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "15.png"), "C", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E15.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "16.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E16.png")),
-                (os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Questions", "17.png"), "B", os.path.join("Research_Officer", "Economics", "Module_1", "Set_2", "Explanation", "E17.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "10.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E10.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "11.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E11.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "12.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E12.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "13.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E13.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "14.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E14.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "15.png"), "C", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E15.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "16.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E16.png")),
+                (os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Questions", "17.png"), "B", os.path.join("Research Officer", "Economics", "Module 1", "Set 2", "Explanation", "E17.png")),
             ]
         }
     }
@@ -161,7 +161,6 @@ QUIZ_BANK = {
 
 if st.session_state.page == "home":
     st.markdown("<div class='welcome-banner'><h1>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
-    # താങ്കൾ ആവശ്യപ്പെട്ട എല്ലാ വിഭാഗങ്ങളും ഇവിടെ കാണാം
     exams = ["Research Officer", "CSIR NET", "HSA Maths", "HSST Stat", "HSST Maths"]
     cols = st.columns(3)
     for i, ex in enumerate(exams):
@@ -169,7 +168,6 @@ if st.session_state.page == "home":
             st.markdown(f"<div class='custom-card'><h3>{ex}</h3></div>", unsafe_allow_html=True)
             if st.button(f"Start Learning {ex}", key=ex):
                 st.session_state.current_exam = ex
-                # Research Officer ഒഴികെയുള്ളവ 'other_exams' പേജിലേക്ക് പോകും
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
 
@@ -238,13 +236,13 @@ elif st.session_state.page == "quiz_setup":
             q_idx = st.session_state.current_q
             q_img, cor, e_img = active_data[q_idx]
             
-            # --- QUESTION NUMBER DISPLAY ---
+            # --- ഇമേജിന് മുകളിൽ ക്വസ്റ്റ്യൻ നമ്പർ കാണിക്കുന്നു ---
             st.markdown(f"<div class='q-header'>Question No: {q_idx + 1}</div>", unsafe_allow_html=True)
             
             c1, c2 = st.columns([3, 1])
             with c1:
                 if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                else: st.error(f"Image not found at: {q_img}")
+                else: st.error(f"Image not found: {q_img}")
             with c2:
                 ans_key = f"radio_{curr_id}_{q_idx}"
                 saved = st.session_state.user_answers.get(q_idx)
@@ -273,11 +271,6 @@ elif st.session_state.page == "quiz_setup":
                     else: st.warning("Explanation image missing.")
             if st.button("🔄 Restart Quiz"): st.session_state.quiz_submitted = False; st.rerun()
     else:
-        st.warning("Materials coming soon!")
-
-elif st.session_state.page == "other_exams":
-    st.title(f"📍 {st.session_state.current_exam}")
-    if st.button("⬅️ Back Home"): st.session_state.page = "home"; st.rerun()
-    st.info(f"Preparation materials for {st.session_state.current_exam} will be added soon!")
+        st.warning(f"Materials for '{sel_mod}' coming soon!")
 
 st.markdown("<br><hr><p style='text-align: center; color: grey;'>Professor Shakeelurahman OP | © 2026</p>", unsafe_allow_html=True)
