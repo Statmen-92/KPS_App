@@ -80,6 +80,15 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+# --- 2. ADVANCED CUSTOM CSS (താഴെ ഇത് കൂടി ചേർക്കുക) ---
+st.markdown("""
+    <script>
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+    document.getElementsByTagName('head')[0].appendChild(meta);
+    </script>
+    """, unsafe_allow_html=True)
 
 # --- 3. SESSION STATE INITIALIZATION ---
 if 'page' not in st.session_state: st.session_state.page = "home"
