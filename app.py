@@ -4,9 +4,12 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. ADVANCED CUSTOM CSS ---
+# --- 2. ADVANCED CUSTOM CSS & SMART ZOOM ---
 st.markdown("""
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/medium-zoom/dist/style.min.css">
+    
     <style>
+    /* സ്ട്രീംലിറ്റ് ഹെഡർ ഒഴിവാക്കാൻ */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -29,6 +32,7 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
+    /* എല്ലാ ബട്ടണുകളും കാർഡ് സ്റ്റൈലിലാക്കാൻ */
     div.stButton > button {
         height: 75px !important;
         background-color: white !important;
@@ -52,11 +56,12 @@ st.markdown("""
         border: 2px solid #218838 !important;
     }
 
+    /* ഇമേജുകൾക്ക് സൂമിംഗ് ലുക്ക് നൽകുന്നു */
     .stImage img {
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        cursor: zoom-in;
+        cursor: zoom-in !important;
     }
 
     .q-header {
@@ -79,10 +84,22 @@ st.markdown("""
         margin-bottom: 25px;
     }
     </style>
-    """, unsafe_allow_html=True)
-# --- 2. ADVANCED CUSTOM CSS (താഴെ ഇത് കൂടി ചേർക്കുക) ---
-st.markdown("""
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script>
     <script>
+    // ഓരോ 2 സെക്കന്റിലും പുതിയ ഇമേജുകൾ ഉണ്ടോ എന്ന് നോക്കി സൂം ആഡ് ചെയ്യും
+    function initZoom() {
+        const images = document.querySelectorAll('.stImage img');
+        mediumZoom(images, {
+            margin: 20,
+            background: '#000000e6' // സൂം ചെയ്യുമ്പോൾ ബാക്ക്ഗ്രൗണ്ട് കറുപ്പാക്കാൻ
+        });
+    }
+    
+    // ആപ്പ് ലോഡ് ചെയ്യുമ്പോൾ റൺ ചെയ്യാൻ
+    setTimeout(initZoom, 2000);
+    
+    // മൊബൈൽ സൂമിംഗ് കമാൻഡ്
     var meta = document.createElement('meta');
     meta.name = 'viewport';
     meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
