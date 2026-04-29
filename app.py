@@ -10,33 +10,42 @@ st.markdown("""
     .stApp { background-color: #f0f2f6; }
     .custom-card {
         background-color: white;
-        padding: 25px;
-        border-radius: 15px;
+        padding: 15px;
+        border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border-top: 5px solid #28a745;
-        transition: transform 0.3s ease;
-        margin-bottom: 20px;
         text-align: center;
+        margin-bottom: 10px;
     }
-    .custom-card:hover { transform: translateY(-5px); }
     .welcome-banner {
         background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
         color: white;
-        padding: 40px;
-        border-radius: 20px;
+        padding: 20px;
+        border-radius: 15px;
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
     }
-    div.stButton > button:first-child {
-        background-color: #28a745;
-        color: white;
-        border-radius: 10px;
-        border: none;
-        height: 3.5em;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+    /* ഹോം പേജിലെ ബട്ടണുകളെ കാർഡുകളാക്കി മാറ്റുന്ന സ്റ്റൈൽ */
+    div.stButton > button {
+        height: 70px !important;
+        background-color: white !important;
+        color: #1e3c72 !important;
+        border: 2px solid #28a745 !important;
+        border-radius: 12px !important;
+        font-weight: bold !important;
+        font-size: 0.85em !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+        transition: 0.3s !important;
+        white-space: normal !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
-    div.stButton > button:hover { background-color: #218838; border: none; }
+    div.stButton > button:hover {
+        background-color: #28a745 !important;
+        color: white !important;
+        border: 2px solid #218838 !important;
+    }
     .result-card {
         background: white;
         border: 2px solid #28a745;
@@ -68,7 +77,7 @@ if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 if 'last_selected_set' not in st.session_state: st.session_state.last_selected_set = ""
 
-# --- 4. FULL SYLLABUS DATA (STRICTLY PRESERVED) ---
+# --- 4. FULL SYLLABUS DATA ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
@@ -111,7 +120,7 @@ FULL_SYLLABUS = {
     }
 }
 
-# --- 5. QUIZ BANK (OLDER FORMAT - MANUAL ENTRY) ---
+# --- 5. QUIZ BANK ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
@@ -160,11 +169,11 @@ QUIZ_BANK = {
 # ==========================================
 
 if st.session_state.page == "home":
-    st.markdown("<div class='welcome-banner' style='padding:15px; margin-bottom:20px;'><h2 style='font-size:1.5em;'>🎓 MATHS-STAT WORLD</h2><p style='font-size:0.9em;'>Research Officer Hub</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
     
     exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
 
-    # ഒരു വരിയിൽ 2 എണ്ണം വീതം ബോക്സുകൾ
+    # ഒരു വരിയിൽ 2 ബോക്സുകൾ വീതം
     cols = st.columns(2)
     
     for i, ex in enumerate(exams):
@@ -173,30 +182,6 @@ if st.session_state.page == "home":
                 st.session_state.current_exam = ex
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
-
-    # ബോക്സുകളുടെ വലുപ്പം കുറയ്ക്കാനുള്ള സ്റ്റൈൽ
-    st.markdown("""
-        <style>
-        div.stButton > button {
-            height: 70px !important;  /* ഇവിടെ ഉയരം 120-ൽ നിന്ന് 70-ലേക്ക് കുറച്ചു */
-            border-radius: 12px !important;
-            font-size: 0.9em !important; /* അക്ഷരങ്ങളുടെ വലുപ്പവും അല്പം കുറച്ചു */
-            background-color: white !important;
-            color: #1e3c72 !important;
-            border: 2px solid #28a745 !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-            margin-bottom: 8px !important;
-            font-weight: bold !important;
-            line-height: 1.2 !important;
-        }
-        div.stButton > button:hover {
-            background-color: #28a745 !important;
-            color: white !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-# --- ബാക്കിയുള്ള കോഡുകൾ (exam_detail, subject_options, etc.) മാറ്റമില്ലാതെ തുടരുക ---
 
 elif st.session_state.page == "exam_detail":
     st.title(f"📍 {st.session_state.current_exam}")
@@ -263,7 +248,6 @@ elif st.session_state.page == "quiz_setup":
             q_idx = st.session_state.current_q
             q_img, cor, e_img = active_data[q_idx]
             
-            # --- ഇമേജിന് മുകളിൽ ക്വസ്റ്റ്യൻ നമ്പർ കാണിക്കുന്നു ---
             st.markdown(f"<div class='q-header'>Question No: {q_idx + 1}</div>", unsafe_allow_html=True)
             
             c1, c2 = st.columns([3, 1])
