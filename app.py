@@ -5,41 +5,35 @@ import os
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
 # --- 2. ADVANCED CUSTOM CSS ---
-# --- 2. ADVANCED CUSTOM CSS ---
 st.markdown("""
     <style>
-    /* ഹെഡർ ഐക്കണുകൾ ഒഴിവാക്കുന്നു */
+    /* സ്ട്രീംലിറ്റ് ഹെഡർ, ഫോർക്ക്, മെനു എന്നിവ ഒഴിവാക്കാൻ */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    .stApp { background-color: #f0f2f6; }
-    
-    /* മൊബൈലിൽ മുകളിലെ ഗ്യാപ്പ് കുറയ്ക്കാൻ */
+    /* മുകളിലെ അധിക സ്പേസ് കുറയ്ക്കാൻ */
     .block-container {
         padding-top: 1rem;
         padding-bottom: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
-    .custom-card {
-        background-color: white;
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-top: 5px solid #28a745;
-        text-align: center;
-        margin-bottom: 10px;
-    }
+    .stApp { background-color: #f0f2f6; }
+    
     .welcome-banner {
         background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
         color: white;
-        padding: 20px;
+        padding: 18px;
         border-radius: 15px;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
+
+    /* എല്ലാ ബട്ടണുകളും വലിയ ബോക്സുകളായി (Cards) മാറാനുള്ള സ്റ്റൈൽ */
     div.stButton > button {
-        height: 70px !important;
+        height: 75px !important;
         background-color: white !important;
         color: #1e3c72 !important;
         border: 2px solid #28a745 !important;
@@ -52,13 +46,50 @@ st.markdown("""
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        margin-bottom: 5px !important;
     }
+    
     div.stButton > button:hover {
         background-color: #28a745 !important;
         color: white !important;
         border: 2px solid #218838 !important;
     }
-    /* മറ്റ് സ്റ്റൈലുകൾ തുടരുന്നു... */
+
+    /* മുകളിലെ ബാക്ക് ബട്ടണിന് മാത്രമുള്ള ചെറിയ ഡിസൈൻ */
+    .back-btn {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .custom-card {
+        background-color: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #28a745;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .result-card {
+        background: white;
+        border: 2px solid #28a745;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .q-header {
+        background-color: #1e3c72;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 1.1em;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -71,7 +102,7 @@ if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 if 'last_selected_set' not in st.session_state: st.session_state.last_selected_set = ""
 
-# --- 4. FULL SYLLABUS DATA ---
+# --- 4. FULL SYLLABUS DATA (STRICTLY PRESERVED) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
@@ -114,7 +145,7 @@ FULL_SYLLABUS = {
     }
 }
 
-# --- 5. QUIZ BANK ---
+# --- 5. QUIZ BANK (FULL QUESTIONS PRESERVED) ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
@@ -162,14 +193,11 @@ QUIZ_BANK = {
 # PAGE LOGIC
 # ==========================================
 
+# --- 1. HOME PAGE ---
 if st.session_state.page == "home":
-    st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
-    
+    st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2><p style='font-size:0.8em;'>Research Officer Hub</p></div>", unsafe_allow_html=True)
     exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
-
-    # ഒരു വരിയിൽ 2 ബോക്സുകൾ വീതം
     cols = st.columns(2)
-    
     for i, ex in enumerate(exams):
         with cols[i % 2]:
             if st.button(f"{ex}", key=ex, use_container_width=True):
@@ -177,42 +205,53 @@ if st.session_state.page == "home":
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
 
+# --- 2. EXAM DETAIL PAGE ---
 elif st.session_state.page == "exam_detail":
-    st.title(f"📍 {st.session_state.current_exam}")
-    if st.button("⬅️ Back Home"): st.session_state.page = "home"; st.rerun()
+    if st.button("⬅ Back to Home", key="back_home"): 
+        st.session_state.page = "home"
+        st.rerun()
+    st.markdown(f"<div class='welcome-banner'><h3>📍 {st.session_state.current_exam}</h3></div>", unsafe_allow_html=True)
     subs = list(FULL_SYLLABUS.keys())
     cols = st.columns(2)
     for i, s in enumerate(subs):
         with cols[i % 2]:
-            st.markdown(f"<div class='custom-card'><h2>{s}</h2></div>", unsafe_allow_html=True)
-            if st.button(f"Explore {s}", key=f"sub_{s}"):
+            if st.button(f"{s}", key=f"sub_{s}", use_container_width=True):
                 st.session_state.current_subject = s
                 st.session_state.page = "subject_options"
                 st.rerun()
 
+# --- 3. SUBJECT OPTIONS PAGE ---
 elif st.session_state.page == "subject_options":
-    st.title(f"📚 {st.session_state.current_subject}")
-    if st.button("⬅️ Back"): st.session_state.page = "exam_detail"; st.rerun()
+    if st.button("⬅ Back", key="back_exam"): 
+        st.session_state.page = "exam_detail"
+        st.rerun()
+    st.markdown(f"<div class='welcome-banner'><h3>📚 {st.session_state.current_subject}</h3></div>", unsafe_allow_html=True)
     feats = {"Syllabus": "📖", "Notes": "📝", "Test Practice": "🎯", "Model Exam": "📝", "Video Class": "🎥"}
-    cols = st.columns(3)
+    cols = st.columns(2)
     for i, (name, icon) in enumerate(feats.items()):
-        with cols[i % 3]:
-            st.markdown(f"<div class='custom-card'><h1>{icon}</h1><h4>{name}</h4></div>", unsafe_allow_html=True)
-            if st.button(f"Open {name}", key=f"opt_{name}"):
+        with cols[i % 2]:
+            if st.button(f"{icon} {name}", key=f"opt_{name}", use_container_width=True):
                 if name == "Syllabus": st.session_state.page = "syllabus_view"
                 elif name == "Test Practice": st.session_state.page = "quiz_setup"
                 else: st.info(f"{name} Coming Soon!")
                 st.rerun()
 
+# --- 4. SYLLABUS VIEW PAGE ---
 elif st.session_state.page == "syllabus_view":
-    st.title(f"📖 Syllabus: {st.session_state.current_subject}")
-    if st.button("⬅️ Back"): st.session_state.page = "subject_options"; st.rerun()
+    if st.button("⬅ Back", key="back_opt"): 
+        st.session_state.page = "subject_options"
+        st.rerun()
     data = FULL_SYLLABUS[st.session_state.current_subject]
-    st.header(f"Total: {data['Total Marks']} Marks")
+    st.markdown(f"<div class='welcome-banner'><h3>📖 Syllabus: {st.session_state.current_subject}</h3><p>Total: {data['Total Marks']} Marks</p></div>", unsafe_allow_html=True)
     for section, detail in data['Modules'].items():
         with st.expander(section): st.write(detail)
 
+# --- 5. QUIZ SETUP PAGE ---
 elif st.session_state.page == "quiz_setup":
+    if st.button("⬅ Exit Quiz", key="exit_quiz"): 
+        st.session_state.page = "subject_options"
+        st.rerun()
+    
     with st.sidebar:
         st.markdown(f"### 📍 {st.session_state.current_exam}")
         mod_opts = list(FULL_SYLLABUS[st.session_state.current_subject]["Modules"].keys())
@@ -226,7 +265,6 @@ elif st.session_state.page == "quiz_setup":
             st.session_state.current_q = 0
             st.session_state.last_selected_set = curr_id
             st.rerun()
-        if st.button("🏁 Exit"): st.session_state.page = "subject_options"; st.rerun()
 
     st.title(f"🎯 {sel_mod}")
     active_data = QUIZ_BANK.get(st.session_state.current_subject, {}).get(sel_mod, {}).get(sel_set)
@@ -278,4 +316,5 @@ elif st.session_state.page == "quiz_setup":
     else:
         st.warning(f"Materials for '{sel_mod}' coming soon!")
 
+# --- FOOTER ---
 st.markdown("<br><hr><p style='text-align: center; color: grey;'>Professor Shakeelurahman OP | © 2026</p>", unsafe_allow_html=True)
