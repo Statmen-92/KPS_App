@@ -162,25 +162,29 @@ QUIZ_BANK = {
 if st.session_state.page == "home":
     st.markdown("<div class='welcome-banner' style='padding:20px;'><h1 style='font-size:1.8em;'>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
     
-    exams = ["Research Officer", "CSIR NET", "HSA Maths", "HSST Stat", "HSST Maths"]
+    exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
     
-    # സ്ക്രീൻ വിഡ്ത്ത് അനുസരിച്ച് ലാപ്ടോപ്പിൽ 3-ഉം മൊബൈലിൽ 2-ഉം കോളങ്ങൾ സെറ്റ് ചെയ്യാം
-    # സാധാരണയായി ലാപ്ടോപ്പിൽ വിൻഡോ വലുതായതുകൊണ്ട് 3 കോളങ്ങൾ മനോഹരമായിരിക്കും
-    import streamlit as st
+    # CSS ഉപയോഗിച്ച് മൊബൈലിൽ മാത്രം മാറ്റം വരുത്തുന്നു
+    st.markdown("""
+        <style>
+        [data-testid="column"] {
+            min-width: 150px !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-    # ലാപ്ടോപ്പിലും മൊബൈലിലും ഒരേപോലെ കാണാൻ 2 കോളം ഗ്രിഡ് ആണ് ഏറ്റവും സുരക്ഷിതം
-    # അല്ലെങ്കിൽ താഴെ പറയുന്ന രീതി പരീക്ഷിക്കൂ
-    cols = st.columns(2) 
+    # ലാപ്ടോപ്പിൽ 3 നിരകളായി കാണിക്കും
+    # മൊബൈലിൽ സ്ക്രീൻ കുറവായതുകൊണ്ട് ഇത് സ്വയം 2 നിരകളായി മാറും
+    cols = st.columns(3)
     
     for i, ex in enumerate(exams):
-        # i % 2 ഉപയോഗിച്ച് ഓരോ വരിയിലും രണ്ട് ബട്ടണുകൾ വീതം വരുന്നു
-        with cols[i % 2]:
+        with cols[i % 3]:
             st.markdown(f"""
-                <div class='custom-card' style='padding: 15px; margin-bottom: 10px; min-height: 120px;'>
-                    <h4 style='font-size: 0.9em; margin-bottom: 10px;'>{ex}</h4>
+                <div class='custom-card' style='padding: 10px; margin-bottom: 5px; min-height: 100px;'>
+                    <h4 style='font-size: 0.85em; margin-bottom: 8px;'>{ex}</h4>
                 </div>
             """, unsafe_allow_html=True)
-            if st.button(f"Start {ex.split()[-1]}", key=ex, use_container_width=True):
+            if st.button(f"Start", key=ex, use_container_width=True):
                 st.session_state.current_exam = ex
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
