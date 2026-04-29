@@ -90,6 +90,13 @@ st.markdown("""
         text-align: center;
         font-size: 1.1em;
     }
+            /* ഇമേജുകൾക്ക് ഒരു ചെറിയ ബോർഡറും ഷാഡോയും നൽകാൻ */
+    .stImage img {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        cursor: zoom-in; /* മൗസ് വെക്കുമ്പോൾ സൂം ചെയ്യാം എന്ന് കാണിക്കാൻ */
+    }
     </style>
     """, unsafe_allow_html=True)
 
