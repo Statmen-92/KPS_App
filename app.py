@@ -247,57 +247,85 @@ elif st.session_state.page == "syllabus_view":
         with st.expander(section): st.write(detail)
 
 # --- 5. QUIZ SETUP PAGE ---
+# --- 5. QUIZ SETUP PAGE ---
 elif st.session_state.page == "quiz_setup":
+    # 1. ടോപ്പ് ബാക്ക് ബട്ടൺ
     if st.button("⬅ Exit Quiz", key="exit_quiz"): 
         st.session_state.page = "subject_options"
         st.rerun()
     
-    with st.sidebar:
-        st.markdown(f"### 📍 {st.session_state.current_exam}")
-        mod_opts = list(FULL_SYLLABUS[st.session_state.current_subject]["Modules"].keys())
+    # 2. ക്വിസ് ടൈറ്റിൽ ബാനർ
+    st.markdown(f"<div class='welcome-banner'><h3>🎯 {st.session_state.current_subject} Practice</h3></div>", unsafe_allow_html=True)
+    
+    # 3. മൊഡ്യൂൾ & സെറ്റ് സെലക്ഷൻ (മൊബൈൽ ഫ്രണ്ട്ലി ഡിസൈൻ)
+    # സൈഡ്ബാറിന് പകരം നേരിട്ട് മെയിൻ പേജിൽ നൽകുന്നു
+    mod_opts = list(FULL_SYLLABUS[st.session_state.current_subject]["Modules"].keys())
+    
+    col_sel1, col_sel2 = st.columns([2, 1])
+    with col_sel1:
         sel_mod = st.selectbox("Select Module:", mod_opts)
-        sel_set = st.radio("Choose Set:", ["Set 1", "Set 2", "Set 3"])
+    with col_sel2:
+        # സെറ്റുകൾ വശങ്ങളിലായി കാണിക്കാൻ horizontal=True നൽകി
+        sel_set = st.radio("Choose Set:", ["Set 1", "Set 2", "Set 3"], horizontal=True)
         
-        curr_id = f"{st.session_state.current_subject}_{sel_mod}_{sel_set}"
-        if st.session_state.last_selected_set != curr_id:
-            st.session_state.quiz_submitted = False
-            st.session_state.user_answers = {}
-            st.session_state.current_q = 0
-            st.session_state.last_selected_set = curr_id
-            st.rerun()
+    curr_id = f"{st.session_state.current_subject}_{sel_mod}_{sel_set}"
+    
+    if st.session_state.last_selected_set != curr_id:
+        st.session_state.quiz_submitted = False
+        st.session_state.user_answers = {}
+        st.session_state.current_q = 0
+        st.session_state.last_selected_set = curr_id
+        st.rerun()
 
-    st.title(f"🎯 {sel_mod}")
+    st.markdown("---")
+    
+    # 4. ക്വിസ് ഡാറ്റ ലോജിക്
     active_data = QUIZ_BANK.get(st.session_state.current_subject, {}).get(sel_mod, {}).get(sel_set)
 
     if active_data:
         if not st.session_state.quiz_submitted:
-            p_cols = st.columns(10)
+            # ക്വസ്റ്റ്യൻ നമ്പറുകൾ (മൊബൈലിൽ ഒതുങ്ങാൻ 5 കോളങ്ങൾ വീതം)
+            p_cols = st.columns(5)
             for i in range(len(active_data)):
-                with p_cols[i]:
+                with p_cols[i % 5]:
                     if st.button(f"{i+1}", key=f"btn_{i}", type="primary" if i == st.session_state.current_q else "secondary"):
                         st.session_state.current_q = i; st.rerun()
+            
             st.markdown("---")
             q_idx = st.session_state.current_q
             q_img, cor, e_img = active_data[q_idx]
             
+            # ക്വസ്റ്റ്യൻ ഹെഡർ
             st.markdown(f"<div class='q-header'>Question No: {q_idx + 1}</div>", unsafe_allow_html=True)
             
-            c1, c2 = st.columns([3, 1])
+            # ഇമേജും ഓപ്ഷനുകളും
+            c1, c2 = st.columns([2, 1])
             with c1:
-                if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                else: st.error(f"Image not found: {q_img}")
+                if os.path.exists(q_img): 
+                    st.image(q_img, use_container_width=True)
+                else: 
+                    st.error(f"Image not found: {q_img}")
+            
             with c2:
                 ans_key = f"radio_{curr_id}_{q_idx}"
                 saved = st.session_state.user_answers.get(q_idx)
                 choice = st.radio("Answer:", ["A", "B", "C", "D"], index=["A","B","C","D"].index(saved) if saved else None, key=ans_key)
-                if st.button("Save & Next"):
-                    if choice: st.session_state.user_answers[q_idx] = choice
-                    st.session_state.current_q = min(q_idx + 1, len(active_data)-1); st.rerun()
-                if q_idx == len(active_data)-1 and st.button("🏆 Submit"):
-                    st.session_state.quiz_submitted = True; st.rerun()
+                
+                if st.button("Save & Next", use_container_width=True):
+                    if choice: 
+                        st.session_state.user_answers[q_idx] = choice
+                    st.session_state.current_q = min(q_idx + 1, len(active_data)-1)
+                    st.rerun()
+                
+                if q_idx == len(active_data)-1:
+                    if st.button("🏆 Submit Quiz", type="primary", use_container_width=True):
+                        st.session_state.quiz_submitted = True
+                        st.rerun()
         else:
+            # റിസൾട്ട് പേജ്
             score = sum(1 for i, (_, c, _) in enumerate(active_data) if st.session_state.user_answers.get(i) == c)
             st.markdown(f"<div class='result-card'><h1>Score: {score} / {len(active_data)}</h1></div>", unsafe_allow_html=True)
+            
             for i, (q_img, cor, e_img) in enumerate(active_data):
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 is_right = u_ans == cor
@@ -306,13 +334,16 @@ elif st.session_state.page == "quiz_setup":
                     with r1:
                         if os.path.exists(q_img): st.image(q_img, use_container_width=True)
                     with r2:
-                        st.success(f"Correct Answer: {cor}")
-                        st.write(f"Your Answer: {u_ans}")
+                        st.success(f"Correct: {cor}")
+                        st.write(f"Yours: {u_ans}")
                     st.markdown("---")
                     st.write("#### 💡 Explanation:")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
-                    else: st.warning("Explanation image missing.")
-            if st.button("🔄 Restart Quiz"): st.session_state.quiz_submitted = False; st.rerun()
+                    else: st.warning("Explanation missing.")
+            
+            if st.button("🔄 Restart Quiz", use_container_width=True): 
+                st.session_state.quiz_submitted = False
+                st.rerun()
     else:
         st.warning(f"Materials for '{sel_mod}' coming soon!")
 
