@@ -160,39 +160,38 @@ QUIZ_BANK = {
 # ==========================================
 
 if st.session_state.page == "home":
-    st.markdown("<div class='welcome-banner' style='padding:20px;'><h1 style='font-size:1.8em;'>🎓 MATHS-STAT WORLD</h1><p>Research Officer Hub</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='welcome-banner' style='padding:15px; margin-bottom:20px;'><h2 style='font-size:1.5em;'>🎓 MATHS-STAT WORLD</h2><p style='font-size:0.9em;'>Research Officer Hub</p></div>", unsafe_allow_html=True)
     
     exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
 
-    # ഒരു വരിയിൽ 2 എണ്ണം വീതം ബോക്സുകൾ വരാൻ
+    # ഒരു വരിയിൽ 2 എണ്ണം വീതം ബോക്സുകൾ
     cols = st.columns(2)
     
     for i, ex in enumerate(exams):
         with cols[i % 2]:
-            # ഓരോ ബോക്സും ക്ലിക്ക് ചെയ്യാവുന്ന വലിയ ബട്ടണായി മാറുന്നു
             if st.button(f"{ex}", key=ex, use_container_width=True):
                 st.session_state.current_exam = ex
                 st.session_state.page = "exam_detail" if ex == "Research Officer" else "other_exams"
                 st.rerun()
 
-    # ബട്ടണുകളെ കാർഡുകളായി മാറ്റാനുള്ള സ്റ്റൈൽ
+    # ബോക്സുകളുടെ വലുപ്പം കുറയ്ക്കാനുള്ള സ്റ്റൈൽ
     st.markdown("""
         <style>
         div.stButton > button {
-            height: 120px !important;
-            border-radius: 15px !important;
-            font-size: 1.1em !important;
+            height: 70px !important;  /* ഇവിടെ ഉയരം 120-ൽ നിന്ന് 70-ലേക്ക് കുറച്ചു */
+            border-radius: 12px !important;
+            font-size: 0.9em !important; /* അക്ഷരങ്ങളുടെ വലുപ്പവും അല്പം കുറച്ചു */
             background-color: white !important;
             color: #1e3c72 !important;
             border: 2px solid #28a745 !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
-            margin-bottom: 10px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+            margin-bottom: 8px !important;
             font-weight: bold !important;
+            line-height: 1.2 !important;
         }
         div.stButton > button:hover {
             background-color: #28a745 !important;
             color: white !important;
-            border: 2px solid #218838 !important;
         }
         </style>
     """, unsafe_allow_html=True)
