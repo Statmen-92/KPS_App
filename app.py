@@ -4,21 +4,31 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. MOBILE ZOOM ENABLER (JavaScript Meta Tag) ---
-# ഇത് മൊബൈൽ ബ്രൗസറുകളിൽ വിരലുകൾ കൊണ്ട് സൂം (Pinch-to-zoom) ചെയ്യാൻ അനുവദിക്കും.
+# --- 2. GLOBAL MOBILE ZOOM ENABLE (CRITICAL FIX) ---
+# ഈ സ്ക്രിപ്റ്റ് ആപ്പിലെ എല്ലാ പേജുകളിലും വിരലുകൾ കൊണ്ടുള്ള സൂമിംഗ് (Pinch-to-zoom) നിർബന്ധമായും അനുവദിക്കും.
 st.markdown("""
     <script>
-    var meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-    document.getElementsByTagName('head')[0].appendChild(meta);
+    const addZoom = () => {
+        var meta = document.querySelector('meta[name="viewport"]');
+        if (meta) {
+            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+        } else {
+            meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+            document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+    };
+    // ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും പേജ് മാറുമ്പോഴും സൂം ആക്റ്റീവ് ആക്കാൻ
+    addZoom();
+    document.addEventListener('DOMContentLoaded', addZoom);
     </script>
     """, unsafe_allow_html=True)
 
 # --- 3. ADVANCED CUSTOM CSS ---
 st.markdown("""
     <style>
-    /* സ്ട്രീംലിറ്റ് ഹെഡർ ഐക്കണുകൾ ഒഴിവാക്കുന്നു */
+    /* ഹെഡർ ഐക്കണുകൾ ഒഴിവാക്കുന്നു */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -51,11 +61,6 @@ st.markdown("""
         font-weight: bold !important;
         font-size: 0.9em !important;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-        transition: 0.3s !important;
-        white-space: normal !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
         margin-bottom: 5px !important;
     }
     
@@ -83,6 +88,7 @@ st.markdown("""
         margin-bottom: 25px;
     }
     
+    /* എല്ലാ ഇമേജുകൾക്കും ബോർഡർ */
     .stImage img {
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -90,7 +96,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. SESSION STATE INITIALIZATION ---
+# --- 4. SESSION STATE ---
 if 'page' not in st.session_state: st.session_state.page = "home"
 if 'current_exam' not in st.session_state: st.session_state.current_exam = None
 if 'current_subject' not in st.session_state: st.session_state.current_subject = None
@@ -103,32 +109,17 @@ FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods. Simple random sampling with and without replacement. Stratified sampling. Ratio estimator and regression estimator.",
-            "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": "Probability measure, probability space. Independence of events, conditional probability and Bayes theorem. CDF, PDF, PGF, MGF, Characteristic function. Sequences of random variables, convergence.",
-            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Applications of standard discrete distributions.",
-            "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Distribution of the mean and variance.",
-            "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Minimal Sufficient Statistic, Completeness.",
-            "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Fundamental concepts, tests based on Normal, t, etc.",
-            "MODULE 7: LINEAR REGRESSION (2 marks)": "Least square estimators. Significance test and confidence intervals.",
-            "MODULE 8: TIME SERIES (2 marks)": "Components of Time series, ARMA and ARIMA models.",
-            "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers.",
-            "MODULE 10: VITAL STATISTICS (1 mark)": "Measurement of Fertility: CBR, GFR, ASBR, TFR."
+            "MODULE 1-10": "Sampling, Probability, Standard Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
         }
     },
     "Economics": {
         "Total Marks": 25,
         "Modules": {
-            "Module I: Micro Economic Theory (4 marks)": "Consumer Behaviour, Production Functions, Welfare Economics.",
-            "Module II: Macro Economic Principles (4 marks)": "National Income Accounting, Inflation, Monetary Policies.",
-            "Module III: Economic Growth and Development (4 marks)": "HDI, Poverty Measures, Growth strategies.",
-            "Module IV: Fiscal Federalism and Budgeting (4 marks)": "GST, Finance Commissions, Budgetary procedure.",
-            "Module V: Development Issues of India (3 marks)": "Sectoral composition, Demographic features.",
-            "Module VI: Economy of Kerala (3 marks)": "MSME, KIIFB, Care Economy.",
-            "Module VII: Basic Econometrics (3 marks)": "Regression Functions, Gauss Markov's Theorem."
+            "Module I-VII": "Micro, Macro, Growth, Fiscal, Development Issues, Kerala Economy, Econometrics."
         }
     },
-    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Real Analysis, Topology, Abstract Algebra, etc." } },
-    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Financial Accounting, Taxation, GST, Managerial Economics." } }
+    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Real Analysis, Topology, etc." } },
+    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Accounting, Taxation, GST, etc." } }
 }
 
 # --- 6. QUIZ BANK ---
@@ -196,7 +187,6 @@ elif st.session_state.page == "subject_options":
 elif st.session_state.page == "syllabus_view":
     if st.button("⬅ Back"): st.session_state.page = "subject_options"; st.rerun()
     data = FULL_SYLLABUS[st.session_state.current_subject]
-    st.markdown(f"<div class='welcome-banner'><h3>📖 {st.session_state.current_subject} Syllabus</h3></div>", unsafe_allow_html=True)
     for section, detail in data['Modules'].items():
         with st.expander(section): st.write(detail)
 
@@ -207,11 +197,10 @@ elif st.session_state.page == "quiz_setup":
         st.session_state.user_answers = {}
         st.rerun()
     
-    st.markdown(f"<div class='welcome-banner'><h3>🎯 Practice Mode</h3></div>", unsafe_allow_html=True)
     mod_opts = list(FULL_SYLLABUS[st.session_state.current_subject]["Modules"].keys())
     c1, c2 = st.columns([2, 1])
     with c1: sel_mod = st.selectbox("Select Module:", mod_opts)
-    with c2: sel_set = st.radio("Choose Set:", ["Set 1", "Set 2", "Set 3"], horizontal=True)
+    with c2: sel_set = st.radio("Set:", ["Set 1", "Set 2", "Set 3"], horizontal=True)
         
     curr_id = f"{st.session_state.current_subject}_{sel_mod}_{sel_set}"
     if st.session_state.last_selected_set != curr_id:
@@ -231,7 +220,7 @@ elif st.session_state.page == "quiz_setup":
                 
                 ans_key = f"quiz_radio_{curr_id}_{i}"
                 saved_val = st.session_state.user_answers.get(i)
-                choice = st.radio(f"Select Answer Q{i+1}:", ["A", "B", "C", "D"], 
+                choice = st.radio(f"Answer Q{i+1}:", ["A", "B", "C", "D"], 
                                   index=["A","B","C","D"].index(saved_val) if saved_val in ["A","B","C","D"] else None,
                                   key=ans_key, horizontal=True)
                 if choice: st.session_state.user_answers[i] = choice
@@ -246,11 +235,11 @@ elif st.session_state.page == "quiz_setup":
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 with st.expander(f"Question {i+1}: {'✅' if u_ans == cor else '❌'}"):
                     if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                    st.success(f"Correct: {cor} | Your Answer: {u_ans}")
+                    st.success(f"Correct: {cor} | Yours: {u_ans}")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
             if st.button("🔄 Restart Practice", use_container_width=True): 
                 st.session_state.quiz_submitted = False; st.session_state.user_answers = {}; st.rerun()
     else:
-        st.warning(f"Materials for '{sel_mod}' coming soon!")
+        st.warning(f"Materials coming soon!")
 
 st.markdown("<br><hr><p style='text-align: center; color: grey;'>Professor Shakeelurahman OP | © 2026</p>", unsafe_allow_html=True)
