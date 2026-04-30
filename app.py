@@ -4,31 +4,36 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. GLOBAL MOBILE ZOOM ENABLE (CRITICAL FIX) ---
-# ഈ സ്ക്രിപ്റ്റ് ആപ്പിലെ എല്ലാ പേജുകളിലും വിരലുകൾ കൊണ്ടുള്ള സൂമിംഗ് (Pinch-to-zoom) നിർബന്ധമായും അനുവദിക്കും.
+# --- 2. GLOBAL MOBILE ZOOM ENABLER ---
+# ഇത് ആപ്പിലെ എല്ലാ പേജുകളിലും (ഹോം, സിലബസ്, ക്വിസ്) മൊബൈലിൽ കൈകൊണ്ട് സൂം ചെയ്യാൻ അനുവദിക്കുന്നു.
 st.markdown("""
     <script>
-    const addZoom = () => {
-        var meta = document.querySelector('meta[name="viewport"]');
-        if (meta) {
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-        } else {
-            meta = document.createElement('meta');
+    const enableZoom = () => {
+        const metas = document.getElementsByTagName('meta');
+        let hasViewport = false;
+        for (let i = 0; i < metas.length; i++) {
+            if (metas[i].name === 'viewport') {
+                metas[i].content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+                hasViewport = true;
+                break;
+            }
+        }
+        if (!hasViewport) {
+            const meta = document.createElement('meta');
             meta.name = 'viewport';
             meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
             document.getElementsByTagName('head')[0].appendChild(meta);
         }
     };
-    // ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും പേജ് മാറുമ്പോഴും സൂം ആക്റ്റീവ് ആക്കാൻ
-    addZoom();
-    document.addEventListener('DOMContentLoaded', addZoom);
+    enableZoom();
+    // പേജ് മാറുമ്പോഴും ഇത് ആക്റ്റീവ് ആയി നിലനിൽക്കാൻ
+    document.addEventListener('DOMContentLoaded', enableZoom);
     </script>
     """, unsafe_allow_html=True)
 
 # --- 3. ADVANCED CUSTOM CSS ---
 st.markdown("""
     <style>
-    /* ഹെഡർ ഐക്കണുകൾ ഒഴിവാക്കുന്നു */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -51,7 +56,6 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    /* വലിയ ബട്ടൺ കാർഡുകൾ */
     div.stButton > button {
         height: 75px !important;
         background-color: white !important;
@@ -87,12 +91,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 25px;
     }
-    
-    /* എല്ലാ ഇമേജുകൾക്കും ബോർഡർ */
-    .stImage img {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -104,25 +102,40 @@ if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 if 'last_selected_set' not in st.session_state: st.session_state.last_selected_set = ""
 
-# --- 5. FULL SYLLABUS DATA ---
+# --- 5. COMPLETE SYLLABUS DATA ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
         "Modules": {
-            "MODULE 1-10": "Sampling, Probability, Standard Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
+            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods. Simple random sampling with and without replacement. Stratified sampling. Ratio estimator and regression estimator.",
+            "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": "Probability measure, probability space. Independence of events, conditional probability and Bayes theorem. CDF, PDF, PGF, MGF, Characteristic function. Sequences of random variables, convergence.",
+            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Applications of standard discrete distributions- Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Hypergeometric. Standard continuous distributions: Uniform, Exponential, Weibull, Gamma and normal.",
+            "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Distribution of the mean and variance of a random sample from normal population, Chi-square, t, and F distributions.",
+            "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Minimal Sufficient Statistic, Completeness. Rao-Blackwell theorem, Lehman-Scheffe theorem, Fisher's information measure, Cramer- Rao inequality.",
+            "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Fundamental concepts, tests based on Normal, t, chi-square and F distributions, Parametric and Non-parametric tests.",
+            "MODULE 7: LINEAR REGRESSION (2 marks)": "Inference on simple linear regression models. Properties of least square estimators. Significance test and confidence intervals. Coefficient of determination.",
+            "MODULE 8: TIME SERIES (2 marks)": "Components of Time series, trend and seasonal fluctuations, ACF and PACF, ARMA and ARIMA models.",
+            "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers. Consumer price index number.",
+            "MODULE 10: VITAL STATISTICS (1 mark)": "Measurement of Fertility: CBR, GFR, ASBR, TFR. Measurement of Mortality: CDR, Standardized death rates, ASDR."
         }
     },
     "Economics": {
         "Total Marks": 25,
         "Modules": {
-            "Module I-VII": "Micro, Macro, Growth, Fiscal, Development Issues, Kerala Economy, Econometrics."
+            "Module I: Micro Economic Theory (4 marks)": "Indifference Curve and Revealed Preference Approach- Consumer's Surplus- Production Function- Cobb-Douglas and CES- Price and Output determination- Welfare Economics.",
+            "Module II: Macro Economic Principles (4 marks)": "National Income Accounting- Methods- Inflation and Deflation- Monetary and Fiscal Policies. Balance of Payments.",
+            "Module III: Economic Growth and Development (4 marks)": "Concepts of Growth and Development- Alternative measures: PQLI, HDI, HPI- Poverty Measures- Harrod- Domar and Mahalanobis models.",
+            "Module IV: Fiscal Federalism and Budgeting (4 marks)": "Vertical and horizontal imbalances- Central and State finance- Finance Commissions- GST- Budgetary procedure- FRBM Act.",
+            "Module V: Development Issues of India (3 marks)": "Sectoral composition of national income- Role of planning- Demographic features- Major interventions.",
+            "Module VI: Economy of Kerala (3 marks)": "Development experience- Remittance economy- Decentralized Planning- KIIFB- MSME sector- Care Economy.",
+            "Module VII: Basic Econometrics (3 marks)": "Population and Sample Regression Functions- Goodness of Fit- Basic assumptions of CLRM- Gauss Markov's Theorem."
         }
     },
-    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Real Analysis, Topology, etc." } },
-    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Accounting, Taxation, GST, etc." } }
+    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Functional Analysis, Abstract Algebra, Real Analysis, Topology, Complex Analysis, Differential Equation." } },
+    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Financial Accounting, Partnership, Cost Accounting, Direct Taxation, GST, Managerial Economics, Legal Framework." } }
 }
 
-# --- 6. QUIZ BANK ---
+# --- 6. COMPLETE QUIZ BANK (INCLUDING ECONOMICS SET 2) ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
@@ -187,6 +200,7 @@ elif st.session_state.page == "subject_options":
 elif st.session_state.page == "syllabus_view":
     if st.button("⬅ Back"): st.session_state.page = "subject_options"; st.rerun()
     data = FULL_SYLLABUS[st.session_state.current_subject]
+    st.markdown(f"<div class='welcome-banner'><h3>📖 {st.session_state.current_subject} Syllabus</h3></div>", unsafe_allow_html=True)
     for section, detail in data['Modules'].items():
         with st.expander(section): st.write(detail)
 
@@ -235,11 +249,11 @@ elif st.session_state.page == "quiz_setup":
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 with st.expander(f"Question {i+1}: {'✅' if u_ans == cor else '❌'}"):
                     if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                    st.success(f"Correct: {cor} | Yours: {u_ans}")
+                    st.success(f"Correct Answer: {cor} | Your Answer: {u_ans}")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
             if st.button("🔄 Restart Practice", use_container_width=True): 
                 st.session_state.quiz_submitted = False; st.session_state.user_answers = {}; st.rerun()
     else:
-        st.warning(f"Materials coming soon!")
+        st.warning(f"Practice materials coming soon!")
 
 st.markdown("<br><hr><p style='text-align: center; color: grey;'>Professor Shakeelurahman OP | © 2026</p>", unsafe_allow_html=True)
