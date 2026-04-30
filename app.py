@@ -5,7 +5,7 @@ import os
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
 # --- 2. GLOBAL MOBILE ZOOM FIX ---
-# മൊബൈൽ ബ്രൗസറുകളിൽ Pinch-to-zoom അനുവദിക്കാനുള്ള സ്ക്രിപ്റ്റ്.
+# മൊബൈൽ ബ്രൗസറുകളിൽ എവിടെയും കൈകൊണ്ട് സൂം ചെയ്യാൻ ഇത് സഹായിക്കുന്നു.
 st.markdown("""
     <script>
     var meta = document.createElement('meta');
@@ -91,7 +91,7 @@ if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 if 'last_selected_set' not in st.session_state: st.session_state.last_selected_set = ""
 
-# --- 5. FULL SYLLABUS DATA ---
+# --- 5. COMPLETE SYLLABUS DATA ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
@@ -124,7 +124,7 @@ FULL_SYLLABUS = {
     "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Financial Accounting, Partnership, Cost Accounting, Direct Taxation, GST, Managerial Economics, Legal Framework." } }
 }
 
-# --- 6. FULL QUIZ BANK ---
+# --- 6. COMPLETE QUIZ BANK ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
@@ -176,12 +176,15 @@ elif st.session_state.page == "exam_detail":
 elif st.session_state.page == "subject_options":
     if st.button("⬅ Back"): st.session_state.page = "exam_detail"; st.rerun()
     st.markdown(f"<div class='welcome-banner'><h3>📚 {st.session_state.current_subject}</h3></div>", unsafe_allow_html=True)
-    feats = {"Syllabus": "📖", "Test Practice": "🎯"}
+    
+    feats = {"Syllabus": "📖", "Notes": "📝", "Test Practice": "🎯", "Model Exam": "📝", "Video Class": "🎥"}
     cols = st.columns(2)
     for i, (name, icon) in enumerate(feats.items()):
         with cols[i % 2]:
             if st.button(f"{icon} {name}", key=f"opt_{name}", use_container_width=True):
-                st.session_state.page = "syllabus_view" if name == "Syllabus" else "quiz_setup"
+                if name == "Syllabus": st.session_state.page = "syllabus_view"
+                elif name == "Test Practice": st.session_state.page = "quiz_setup"
+                else: st.info(f"{name} Coming Soon!")
                 st.rerun()
 
 elif st.session_state.page == "syllabus_view":
@@ -217,11 +220,10 @@ elif st.session_state.page == "quiz_setup":
             for i, (q_img, cor, e_img) in enumerate(active_data):
                 st.markdown(f"<div class='q-header'>Question No: {i + 1}</div>", unsafe_allow_html=True)
                 if os.path.exists(q_img):
-                    # use_container_width സജ്ജമാക്കുന്നതിലൂടെ സ്ട്രീംലിറ്റ് ഇൻ-ബിൽറ്റ് ഫുൾസ്ക്രീൻ ബട്ടൺ നൽകും
                     st.image(q_img, use_container_width=True)
                 
                 choice = st.radio(f"Answer Q{i+1}:", ["A", "B", "C", "D"], 
-                                  index=None, key=f"radio_{curr_id}_{i}", horizontal=True)
+                                  index=None, key=f"quiz_radio_{curr_id}_{i}", horizontal=True)
                 if choice: st.session_state.user_answers[i] = choice
                 st.markdown("<br><hr><br>", unsafe_allow_html=True)
 
@@ -234,7 +236,7 @@ elif st.session_state.page == "quiz_setup":
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 with st.expander(f"Question {i+1}: {'✅' if u_ans == cor else '❌'}"):
                     if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                    st.success(f"Correct: {cor} | Yours: {u_ans}")
+                    st.success(f"Correct Answer: {cor} | Your Answer: {u_ans}")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
             if st.button("🔄 Restart Practice", use_container_width=True): 
                 st.session_state.quiz_submitted = False; st.session_state.user_answers = {}; st.rerun()
