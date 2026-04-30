@@ -56,19 +56,19 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. SESSION STATE (STRICT INITIALIZATION) ---
-# AttributeError വരാതിരിക്കാൻ എല്ലാ വേരിയബിളുകളും ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു.
+# --- 4. SESSION STATE INITIALIZATION ---
+# AttributeError ഒഴിവാക്കാൻ എല്ലാ വേരിയബിളുകളും ഇവിടെ ലോക്ക് ചെയ്യുന്നു.
 if 'page' not in st.session_state: st.session_state.page = "home"
-if 'current_exam' not in st.session_state: st.session_state.current_exam = "None"
-if 'current_subject' not in st.session_state: st.session_state.current_subject = "None"
+if 'current_exam' not in st.session_state: st.session_state.current_exam = "Research Officer"
+if 'current_subject' not in st.session_state: st.session_state.current_subject = ""
 if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 
-# --- 5. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
+# --- 5. COMPLETE SYLLABUS DATA (MODULES 1-10) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods, Stratified sampling, Ratio/Regression estimator.",
+            "MODULE 1: SAMPLING (6 marks)": "Random Sampling, Stratified sampling, Ratio/Regression estimator.",
             "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF.",
             "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Exponential, Normal.",
             "MODULE 4-10": "Sampling Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
@@ -77,7 +77,10 @@ FULL_SYLLABUS = {
     "Economics": {
         "Modules": {
             "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES), Welfare Economics.",
-            "Module II-VII": "Macro Economics, Fiscal Federalism, Indian Economy, Kerala Economy, Econometrics."
+            "Module II: Macro Economics (4 marks)": "National Income Accounting, Inflation, Monetary and Fiscal Policies.",
+            "Module III: Growth and Development (4 marks)": "PQLI, HDI, HPI, Poverty Measures, Harrod-Domar models.",
+            "Module IV: Fiscal Federalism (4 marks)": "GST, Finance Commissions, Budgetary procedure, FRBM Act.",
+            "Module V-VII": "Indian Economy, Economy of Kerala, Basic Econometrics."
         }
     }
 }
@@ -93,29 +96,40 @@ QUIZ_BANK = {
 }
 
 # --- 7. NAVIGATION RENDERER ---
+
+# HOME PAGE
 if st.session_state.page == "home":
     st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2></div>", unsafe_allow_html=True)
-    if st.button("Research Officer", key="ro_btn", use_container_width=True):
+    if st.button("Research Officer", use_container_width=True):
         st.session_state.current_exam = "Research Officer"
         st.session_state.page = "exam_detail"
         st.rerun()
 
+# EXAM DETAIL PAGE
 elif st.session_state.page == "exam_detail":
     if st.button("⬅ Back Home"):
         st.session_state.page = "home"
         st.rerun()
-    st.markdown(f"<div class='welcome-banner'><h3>📍 {st.session_state.current_exam}</h3></div>", unsafe_allow_html=True)
+    
+    # current_exam ഉണ്ടോ എന്ന് ഉറപ്പുവരുത്തുന്നു (AttributeError തടയാൻ)
+    exam_name = st.session_state.get('current_exam', 'Research Officer')
+    st.markdown(f"<div class='welcome-banner'><h3>📍 {exam_name}</h3></div>", unsafe_allow_html=True)
+    
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
         if st.button(s, key=f"sub_{s}", use_container_width=True):
             st.session_state.current_subject = s
             st.session_state.page = "subject_options"
             st.rerun()
 
+# SUBJECT OPTIONS PAGE
 elif st.session_state.page == "subject_options":
     if st.button("⬅ Back"):
         st.session_state.page = "exam_detail"
         st.rerun()
-    st.markdown(f"<div class='welcome-banner'><h3>📚 {st.session_state.current_subject}</h3></div>", unsafe_allow_html=True)
+    
+    sub_name = st.session_state.get('current_subject', 'Selected Subject')
+    st.markdown(f"<div class='welcome-banner'><h3>📚 {sub_name}</h3></div>", unsafe_allow_html=True)
+    
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📖 Syllabus", use_container_width=True):
@@ -126,18 +140,25 @@ elif st.session_state.page == "subject_options":
             st.session_state.page = "quiz_setup"
             st.rerun()
 
+# SYLLABUS VIEW PAGE
 elif st.session_state.page == "syllabus_view":
     if st.button("⬅ Back"):
         st.session_state.page = "subject_options"
         st.rerun()
-    data = FULL_SYLLABUS.get(st.session_state.current_subject, {"Modules": {}})
+    
+    sub_name = st.session_state.get('current_subject', 'Statistics')
+    st.markdown(f"<div class='welcome-banner'><h3>📖 {sub_name} Syllabus</h3></div>", unsafe_allow_html=True)
+    
+    data = FULL_SYLLABUS.get(sub_name, {"Modules": {}})
     for section, detail in data['Modules'].items():
-        with st.expander(section): st.write(detail)
+        with st.expander(section):
+            st.write(detail)
 
+# QUIZ SETUP PAGE
 elif st.session_state.page == "quiz_setup":
     if st.button("⬅ Exit Quiz"):
         st.session_state.page = "subject_options"
         st.rerun()
-    st.info("ക്വിസ് ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു...")
+    st.info("ക്വിസ് സെക്ഷൻ തയ്യാറാകുന്നു...")
 
-st.markdown("<br><hr><p style='text-align: center; color: grey;'>© 2026 Maths-Stat World</p>", unsafe_allow_html=True)
+st.markdown("<br><hr><p style='text-align: center; color: grey;'>© 2026 Maths-Stat World Hub</p>", unsafe_allow_html=True)
