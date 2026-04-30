@@ -4,30 +4,14 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. GLOBAL MOBILE ZOOM ENABLER ---
-# ഇത് ആപ്പിലെ എല്ലാ പേജുകളിലും (ഹോം, സിലബസ്, ക്വിസ്) മൊബൈലിൽ കൈകൊണ്ട് സൂം ചെയ്യാൻ അനുവദിക്കുന്നു.
+# --- 2. GLOBAL MOBILE ZOOM FIX ---
+# മൊബൈൽ ബ്രൗസറുകളിൽ Pinch-to-zoom അനുവദിക്കാനുള്ള സ്ക്രിപ്റ്റ്.
 st.markdown("""
     <script>
-    const enableZoom = () => {
-        const metas = document.getElementsByTagName('meta');
-        let hasViewport = false;
-        for (let i = 0; i < metas.length; i++) {
-            if (metas[i].name === 'viewport') {
-                metas[i].content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-                hasViewport = true;
-                break;
-            }
-        }
-        if (!hasViewport) {
-            const meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-            document.getElementsByTagName('head')[0].appendChild(meta);
-        }
-    };
-    enableZoom();
-    // പേജ് മാറുമ്പോഴും ഇത് ആക്റ്റീവ് ആയി നിലനിൽക്കാൻ
-    document.addEventListener('DOMContentLoaded', enableZoom);
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+    document.getElementsByTagName('head')[0].appendChild(meta);
     </script>
     """, unsafe_allow_html=True)
 
@@ -91,6 +75,11 @@ st.markdown("""
         text-align: center;
         margin-bottom: 25px;
     }
+
+    .stImage img {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -102,7 +91,7 @@ if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
 if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 if 'last_selected_set' not in st.session_state: st.session_state.last_selected_set = ""
 
-# --- 5. COMPLETE SYLLABUS DATA ---
+# --- 5. FULL SYLLABUS DATA ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Total Marks": 25,
@@ -113,7 +102,7 @@ FULL_SYLLABUS = {
             "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Distribution of the mean and variance of a random sample from normal population, Chi-square, t, and F distributions.",
             "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Minimal Sufficient Statistic, Completeness. Rao-Blackwell theorem, Lehman-Scheffe theorem, Fisher's information measure, Cramer- Rao inequality.",
             "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Fundamental concepts, tests based on Normal, t, chi-square and F distributions, Parametric and Non-parametric tests.",
-            "MODULE 7: LINEAR REGRESSION (2 marks)": "Inference on simple linear regression models. Properties of least square estimators. Significance test and confidence intervals. Coefficient of determination.",
+            "MODULE 7: LINEAR REGRESSION (2 marks)": "Inference on simple linear regression models. Properties of least square estimators. Significance test and confidence intervals.",
             "MODULE 8: TIME SERIES (2 marks)": "Components of Time series, trend and seasonal fluctuations, ACF and PACF, ARMA and ARIMA models.",
             "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers. Consumer price index number.",
             "MODULE 10: VITAL STATISTICS (1 mark)": "Measurement of Fertility: CBR, GFR, ASBR, TFR. Measurement of Mortality: CDR, Standardized death rates, ASDR."
@@ -131,11 +120,11 @@ FULL_SYLLABUS = {
             "Module VII: Basic Econometrics (3 marks)": "Population and Sample Regression Functions- Goodness of Fit- Basic assumptions of CLRM- Gauss Markov's Theorem."
         }
     },
-    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Functional Analysis, Abstract Algebra, Real Analysis, Topology, Complex Analysis, Differential Equation." } },
+    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Functional Analysis, Abstract Algebra, Real Analysis, Topology, Complex Analysis, Differential Equations." } },
     "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Financial Accounting, Partnership, Cost Accounting, Direct Taxation, GST, Managerial Economics, Legal Framework." } }
 }
 
-# --- 6. COMPLETE QUIZ BANK (INCLUDING ECONOMICS SET 2) ---
+# --- 6. FULL QUIZ BANK ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": {
@@ -162,7 +151,7 @@ QUIZ_BANK = {
 # --- PAGE LOGIC ---
 
 if st.session_state.page == "home":
-    st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2><p>Professor Shakeelurahman OP</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2><p>Excellence in Competitive Exams</p></div>", unsafe_allow_html=True)
     exams = ["Research Officer", "HSST Stat", "CSIR NET", "HSST Maths", "HSA Maths"]
     cols = st.columns(2)
     for i, ex in enumerate(exams):
@@ -187,14 +176,12 @@ elif st.session_state.page == "exam_detail":
 elif st.session_state.page == "subject_options":
     if st.button("⬅ Back"): st.session_state.page = "exam_detail"; st.rerun()
     st.markdown(f"<div class='welcome-banner'><h3>📚 {st.session_state.current_subject}</h3></div>", unsafe_allow_html=True)
-    feats = {"Syllabus": "📖", "Notes": "📝", "Test Practice": "🎯", "Model Exam": "📝", "Video Class": "🎥"}
+    feats = {"Syllabus": "📖", "Test Practice": "🎯"}
     cols = st.columns(2)
     for i, (name, icon) in enumerate(feats.items()):
         with cols[i % 2]:
             if st.button(f"{icon} {name}", key=f"opt_{name}", use_container_width=True):
-                if name == "Syllabus": st.session_state.page = "syllabus_view"
-                elif name == "Test Practice": st.session_state.page = "quiz_setup"
-                else: st.info(f"{name} Coming Soon!")
+                st.session_state.page = "syllabus_view" if name == "Syllabus" else "quiz_setup"
                 st.rerun()
 
 elif st.session_state.page == "syllabus_view":
@@ -214,7 +201,7 @@ elif st.session_state.page == "quiz_setup":
     mod_opts = list(FULL_SYLLABUS[st.session_state.current_subject]["Modules"].keys())
     c1, c2 = st.columns([2, 1])
     with c1: sel_mod = st.selectbox("Select Module:", mod_opts)
-    with c2: sel_set = st.radio("Set:", ["Set 1", "Set 2", "Set 3"], horizontal=True)
+    with c2: sel_set = st.radio("Set:", ["Set 1", "Set 2"], horizontal=True)
         
     curr_id = f"{st.session_state.current_subject}_{sel_mod}_{sel_set}"
     if st.session_state.last_selected_set != curr_id:
@@ -230,13 +217,11 @@ elif st.session_state.page == "quiz_setup":
             for i, (q_img, cor, e_img) in enumerate(active_data):
                 st.markdown(f"<div class='q-header'>Question No: {i + 1}</div>", unsafe_allow_html=True)
                 if os.path.exists(q_img):
+                    # use_container_width സജ്ജമാക്കുന്നതിലൂടെ സ്ട്രീംലിറ്റ് ഇൻ-ബിൽറ്റ് ഫുൾസ്ക്രീൻ ബട്ടൺ നൽകും
                     st.image(q_img, use_container_width=True)
                 
-                ans_key = f"quiz_radio_{curr_id}_{i}"
-                saved_val = st.session_state.user_answers.get(i)
                 choice = st.radio(f"Answer Q{i+1}:", ["A", "B", "C", "D"], 
-                                  index=["A","B","C","D"].index(saved_val) if saved_val in ["A","B","C","D"] else None,
-                                  key=ans_key, horizontal=True)
+                                  index=None, key=f"radio_{curr_id}_{i}", horizontal=True)
                 if choice: st.session_state.user_answers[i] = choice
                 st.markdown("<br><hr><br>", unsafe_allow_html=True)
 
@@ -249,11 +234,11 @@ elif st.session_state.page == "quiz_setup":
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 with st.expander(f"Question {i+1}: {'✅' if u_ans == cor else '❌'}"):
                     if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                    st.success(f"Correct Answer: {cor} | Your Answer: {u_ans}")
+                    st.success(f"Correct: {cor} | Yours: {u_ans}")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
             if st.button("🔄 Restart Practice", use_container_width=True): 
                 st.session_state.quiz_submitted = False; st.session_state.user_answers = {}; st.rerun()
     else:
         st.warning(f"Practice materials coming soon!")
 
-st.markdown("<br><hr><p style='text-align: center; color: grey;'>Professor Shakeelurahman OP | © 2026</p>", unsafe_allow_html=True)
+st.markdown("<br><hr><p style='text-align: center; color: grey;'>© 2026 Maths-Stat World</p>", unsafe_allow_html=True)
