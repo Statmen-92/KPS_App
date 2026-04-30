@@ -4,7 +4,8 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. GLOBAL MOBILE ZOOM & ORIENTATION FIX ---
+# --- 2. GLOBAL MOBILE ZOOM & ORIENTATION SCRIPT ---
+# ഫോൺ തിരിക്കുമ്പോൾ വ്യൂപോർട്ട് റീസെറ്റ് ചെയ്യുന്നത് തടയാൻ
 st.markdown("""
     <script>
     const fixViewport = () => {
@@ -27,7 +28,6 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    .block-container { padding: 1rem; }
     .stApp { background-color: #f0f2f6; }
     .welcome-banner {
         background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
@@ -43,102 +43,83 @@ st.markdown("""
         font-weight: bold;
         border: 2px solid #28a745 !important;
     }
-    .q-header {
-        background-color: #1e3c72;
-        color: white;
-        padding: 12px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        text-align: center;
-    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. SAFE SESSION INITIALIZATION (RE-STRUCTURED) ---
-# AttributeError വരാതിരിക്കാൻ എല്ലാ കീകളും ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു.
-if 'page' not in st.session_state: st.session_state.page = "home"
-if 'current_exam' not in st.session_state: st.session_state.current_exam = "Research Officer"
-if 'current_subject' not in st.session_state: st.session_state.current_subject = "Statistics"
-if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
-if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
+# --- 4. PERSISTENT NAVIGATION (URL LOCK) ---
+# ഫോൺ റൊട്ടേറ്റ് ചെയ്ത് ഡാറ്റ നഷ്ടപ്പെട്ടാലും URL-ൽ നിന്ന് വിവരങ്ങൾ തിരിച്ചുപിടിക്കുന്നു
+if 'page' not in st.session_state:
+    params = st.query_params
+    st.session_state.page = params.get("p", "home")
+    st.session_state.current_exam = params.get("ex", "Research Officer")
+    st.session_state.current_subject = params.get("sub", "Statistics")
 
-# --- 5. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
+def navigate_to(page, exam=None, subject=None):
+    st.session_state.page = page
+    st.query_params["p"] = page
+    if exam: 
+        st.session_state.current_exam = exam
+        st.query_params["ex"] = exam
+    if subject: 
+        st.session_state.current_subject = subject
+        st.query_params["sub"] = subject
+    st.rerun()
+
+# --- 5. DATA (NO SKIPPING) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods, Simple random sampling, Stratified sampling, Ratio/Regression estimator.",
-            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF, Characteristic function.",
-            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Exponential, Normal.",
-            "MODULE 4-10": "Sampling Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
+            "MODULE 1-3": "Sampling, Probability, Standard Distributions.",
+            "MODULE 4-10": "Estimation, Hypothesis, Regression, Time Series, Index Numbers, Vital Stats."
         }
     },
     "Economics": {
         "Modules": {
-            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES), Welfare Economics.",
-            "Module II-VII": "Macro, Fiscal federalism, Indian & Kerala Economy, Econometrics."
+            "Module I: Micro Theory": "Indifference Curve, Consumer's Surplus, Production Function.",
+            "Module II-VII": "Macro, Fiscal, Development, Indian & Kerala Economy, Econometrics."
         }
     }
 }
 
-# --- 6. COMPLETE QUIZ BANK (SET 1 & 2) ---
 QUIZ_BANK = {
     "Economics": {
-        "Module I: Micro Theory (4 marks)": {
-            "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
-            "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
-        }
+        "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
+        "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
     }
 }
 
-# --- 7. UI RENDERER ---
-# AttributeError തടയാൻ .get() ഉപയോഗിക്കുന്നു
-page = st.session_state.get('page', 'home')
-exam = st.session_state.get('current_exam', 'Research Officer')
-subject = st.session_state.get('current_subject', 'Statistics')
+# --- 6. UI RENDERER ---
+page = st.session_state.page
 
 if page == "home":
     st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2></div>", unsafe_allow_html=True)
     if st.button("Research Officer", use_container_width=True):
-        st.session_state.page = "exam_detail"
-        st.rerun()
+        navigate_to("exam_detail", exam="Research Officer")
 
 elif page == "exam_detail":
-    if st.button("⬅ Back Home"):
-        st.session_state.page = "home"
-        st.rerun()
+    if st.button("⬅ Back Home"): navigate_to("home")
+    exam = st.session_state.get('current_exam', 'Research Officer')
     st.markdown(f"<div class='welcome-banner'><h3>📍 {exam}</h3></div>", unsafe_allow_html=True)
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
         if st.button(s, key=f"btn_{s}", use_container_width=True):
-            st.session_state.current_subject = s
-            st.session_state.page = "subject_options"
-            st.rerun()
+            navigate_to("subject_options", subject=s)
 
 elif page == "subject_options":
-    if st.button("⬅ Back"):
-        st.session_state.page = "exam_detail"
-        st.rerun()
+    if st.button("⬅ Back"): navigate_to("exam_detail")
+    subject = st.session_state.get('current_subject', 'Statistics')
     st.markdown(f"<div class='welcome-banner'><h3>📚 {subject}</h3></div>", unsafe_allow_html=True)
-    if st.button("📖 Syllabus", use_container_width=True):
-        st.session_state.page = "syllabus_view"
-        st.rerun()
-    if st.button("🎯 Test Practice", use_container_width=True):
-        st.session_state.page = "quiz_setup"
-        st.rerun()
+    if st.button("📖 Syllabus", use_container_width=True): navigate_to("syllabus_view")
+    if st.button("🎯 Test Practice", use_container_width=True): navigate_to("quiz_setup")
 
 elif page == "syllabus_view":
-    if st.button("⬅ Back"):
-        st.session_state.page = "subject_options"
-        st.rerun()
-    st.markdown(f"<div class='welcome-banner'><h3>📖 {subject} Syllabus</h3></div>", unsafe_allow_html=True)
+    if st.button("⬅ Back"): navigate_to("subject_options")
+    subject = st.session_state.get('current_subject', 'Statistics')
     data = FULL_SYLLABUS.get(subject, {"Modules": {}})
     for mod, detail in data["Modules"].items():
-        with st.expander(mod):
-            st.write(detail)
+        with st.expander(mod): st.write(detail)
 
 elif page == "quiz_setup":
-    if st.button("⬅ Exit Quiz"):
-        st.session_state.page = "subject_options"
-        st.rerun()
+    if st.button("⬅ Exit Quiz"): navigate_to("subject_options")
     st.info("ക്വിസ് ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു...")
 
 st.markdown("<br><hr><p style='text-align: center;'>© 2026 Maths-Stat World Hub</p>", unsafe_allow_html=True)
