@@ -57,6 +57,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 4. PERSISTENT NAVIGATION (URL LOCK) ---
+# ഈ ഭാഗമാണ് ഫോൺ റൊട്ടേറ്റ് ചെയ്യുമ്പോൾ ആപ്പ് റീസെറ്റ് ആകാതെ നോക്കുന്നത്.
 if 'page' not in st.session_state:
     params = st.query_params
     st.session_state.page = params.get("p", "home")
@@ -72,25 +73,25 @@ def navigate_to(page, exam=None, subject=None):
     if subject: st.query_params["sub"] = subject
     st.rerun()
 
-# --- 5. COMPLETE SYLLABUS DATA (MODULES 1-10) ---
+# --- 5. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
             "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods, Simple random sampling, Stratified sampling, Ratio/Regression estimator.",
-            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF.",
-            "MODULE 3: DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Exponential, Normal.",
+            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF, Characteristic function.",
+            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Exponential, Normal.",
             "MODULE 4-10": "Sampling Distributions, Estimation, Testing of Hypothesis, Linear Regression, Time Series, Index Numbers, Vital Statistics."
         }
     },
     "Economics": {
         "Modules": {
-            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES).",
+            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES), Welfare Economics.",
             "Module II-VII": "Macro Economics, Fiscal Federalism, Indian Economy, Kerala Economy, Econometrics."
         }
     }
 }
 
-# --- 6. COMPLETE QUIZ BANK (SET 1 & 2) ---
+# --- 6. COMPLETE QUIZ BANK (NO SKIPPING) ---
 QUIZ_BANK = {
     "Statistics": {
         "MODULE 2: PROBABILITY (3 marks)": {
