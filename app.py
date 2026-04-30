@@ -43,31 +43,63 @@ st.markdown("""
         font-weight: bold;
         border: 2px solid #28a745 !important;
     }
+    .q-header {
+        background-color: #1e3c72;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. SAFE SESSION STATE INITIALIZATION ---
-# ഫോൺ തിരിക്കുമ്പോൾ വേരിയബിളുകൾ നഷ്ടപ്പെടാതിരിക്കാൻ ഇത് നിർബന്ധമാണ്.
-if 'page' not in st.session_state: st.session_state.page = "home"
-if 'current_exam' not in st.session_state: st.session_state.current_exam = "Research Officer"
-if 'current_subject' not in st.session_state: st.session_state.current_subject = "Statistics"
-if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
-if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
+# --- 4. PERSISTENT SESSION STATE (THE FIX) ---
+# AttributeError ഒഴിവാക്കാൻ എല്ലാ കീകളും ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു.
+if 'page' not in st.session_state:
+    params = st.query_params
+    st.session_state.page = params.get("p", "home")
+    st.session_state.current_exam = params.get("ex", "Research Officer")
+    st.session_state.current_subject = params.get("sub", "Statistics")
+    st.session_state.user_answers = {}
+    st.session_state.quiz_submitted = False
 
-# --- 5. COMPLETE SYLLABUS DATA ---
+def navigate_to(page, exam=None, subject=None):
+    st.session_state.page = page
+    st.query_params["p"] = page
+    if exam: 
+        st.session_state.current_exam = exam
+        st.query_params["ex"] = exam
+    if subject: 
+        st.session_state.current_subject = subject
+        st.query_params["sub"] = subject
+    st.rerun()
+
+# --- 5. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling, Stratified sampling, Ratio/Regression estimator.",
-            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF.",
-            "MODULE 3: DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Normal.",
-            "MODULE 4-10": "Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
+            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods, Simple random sampling, Stratified sampling, Ratio/Regression estimator.",
+            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF, Characteristic function.",
+            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Exponential, Normal.",
+            "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Normal population, Chi-square, t, and F distributions.",
+            "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Sufficiency, Completeness, Rao-Blackwell, Lehman-Scheffe.",
+            "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Normal, t, chi-square, F tests, Parametric and Non-parametric tests.",
+            "MODULE 7: LINEAR REGRESSION (2 marks)": "Simple linear regression, least square estimators, Coefficient of determination.",
+            "MODULE 8: TIME SERIES (2 marks)": "Trend and seasonal fluctuations, ACF, PACF, ARMA, ARIMA models.",
+            "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers.",
+            "MODULE 10: VITAL STATISTICS (1 mark)": "Fertility (CBR, GFR, TFR) and Mortality (CDR, ASDR) measurements."
         }
     },
     "Economics": {
         "Modules": {
-            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function.",
-            "Module II-VII": "Macro, Fiscal federalism, Indian Economy, Kerala Economy, Econometrics."
+            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES), Welfare Economics.",
+            "Module II: Macro Principles (4 marks)": "National Income Accounting, Inflation, Monetary and Fiscal Policies.",
+            "Module III: Growth and Development (4 marks)": "PQLI, HDI, HPI, Poverty Measures, Harrod-Domar models.",
+            "Module IV: Fiscal Federalism (4 marks)": "GST, Finance Commissions, Budgetary procedure, FRBM Act.",
+            "Module V: Indian Economy (3 marks)": "Sectoral composition, Planning, Demographic features.",
+            "Module VI: Economy of Kerala (3 marks)": "Remittance economy, KIIFB, MSME sector, Care Economy.",
+            "Module VII: Basic Econometrics (3 marks)": "Regression Functions, Gauss Markov's Theorem."
         }
     }
 }
@@ -83,58 +115,38 @@ QUIZ_BANK = {
 }
 
 # --- 7. NAVIGATION RENDERER ---
+page = st.session_state.page
 
-if st.session_state.page == "home":
+if page == "home":
     st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2></div>", unsafe_allow_html=True)
     if st.button("Research Officer", use_container_width=True):
-        st.session_state.page = "exam_detail"
-        st.rerun()
+        navigate_to("exam_detail", exam="Research Officer")
 
-elif st.session_state.page == "exam_detail":
-    if st.button("⬅ Back Home"):
-        st.session_state.page = "home"
-        st.rerun()
-    
-    # Safe value access to prevent AttributeError
+elif page == "exam_detail":
+    if st.button("⬅ Back Home"): navigate_to("home")
     exam = st.session_state.get('current_exam', 'Research Officer')
     st.markdown(f"<div class='welcome-banner'><h3>📍 {exam}</h3></div>", unsafe_allow_html=True)
-    
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
-        if st.button(s, key=f"nav_{s}", use_container_width=True):
-            st.session_state.current_subject = s
-            st.session_state.page = "subject_options"
-            st.rerun()
+        if st.button(s, key=f"btn_{s}", use_container_width=True):
+            navigate_to("subject_options", subject=s)
 
-elif st.session_state.page == "subject_options":
-    if st.button("⬅ Back"):
-        st.session_state.page = "exam_detail"
-        st.rerun()
-    
+elif page == "subject_options":
+    if st.button("⬅ Back"): navigate_to("exam_detail")
     subject = st.session_state.get('current_subject', 'Statistics')
     st.markdown(f"<div class='welcome-banner'><h3>📚 {subject}</h3></div>", unsafe_allow_html=True)
-    
-    if st.button("📖 Syllabus", use_container_width=True):
-        st.session_state.page = "syllabus_view"
-        st.rerun()
-    if st.button("🎯 Test Practice", use_container_width=True):
-        st.session_state.page = "quiz_setup"
-        st.rerun()
+    if st.button("📖 Syllabus", use_container_width=True): navigate_to("syllabus_view")
+    if st.button("🎯 Test Practice", use_container_width=True): navigate_to("quiz_setup")
 
-elif st.session_state.page == "syllabus_view":
-    if st.button("⬅ Back"):
-        st.session_state.page = "subject_options"
-        st.rerun()
-    
+elif page == "syllabus_view":
+    if st.button("⬅ Back"): navigate_to("subject_options")
     subject = st.session_state.get('current_subject', 'Statistics')
+    st.markdown(f"<div class='welcome-banner'><h3>📖 Syllabus</h3></div>", unsafe_allow_html=True)
     data = FULL_SYLLABUS.get(subject, {"Modules": {}})
-    for mod, detail in data["Modules"].items():
-        with st.expander(mod):
-            st.write(detail)
+    for section, detail in data['Modules'].items():
+        with st.expander(section): st.write(detail)
 
-elif st.session_state.page == "quiz_setup":
-    if st.button("⬅ Exit Quiz"):
-        st.session_state.page = "subject_options"
-        st.rerun()
-    st.info("ക്വിസ് ചോദ്യങ്ങൾ തയ്യാറാകുന്നു...")
+elif page == "quiz_setup":
+    if st.button("⬅ Exit Quiz"): navigate_to("subject_options")
+    st.info("ക്വിസ് ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു...")
 
 st.markdown("<br><hr><p style='text-align: center;'>© 2026 Maths-Stat World</p>", unsafe_allow_html=True)
