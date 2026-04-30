@@ -4,8 +4,7 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. GLOBAL MOBILE ZOOM & ORIENTATION SCRIPT ---
-# ഫോൺ തിരിക്കുമ്പോൾ വ്യൂപോർട്ട് റീസെറ്റ് ചെയ്യുന്നത് തടയാൻ
+# --- 2. MOBILE ZOOM & ROTATION SCRIPT ---
 st.markdown("""
     <script>
     const fixViewport = () => {
@@ -38,21 +37,25 @@ st.markdown("""
         margin-bottom: 20px;
     }
     div.stButton > button {
-        height: 70px !important;
+        height: 75px !important;
+        background-color: white !important;
+        color: #1e3c72 !important;
+        border: 2px solid #28a745 !important;
         border-radius: 12px !important;
         font-weight: bold;
-        border: 2px solid #28a745 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. PERSISTENT NAVIGATION (URL LOCK) ---
-# ഫോൺ റൊട്ടേറ്റ് ചെയ്ത് ഡാറ്റ നഷ്ടപ്പെട്ടാലും URL-ൽ നിന്ന് വിവരങ്ങൾ തിരിച്ചുപിടിക്കുന്നു
+# --- 4. PERSISTENT NAVIGATION (THE REDIRECT FIX) ---
+# URL-ൽ നിന്ന് പഴയ സ്റ്റേറ്റ് റീസ്റ്റോർ ചെയ്യുന്നു
 if 'page' not in st.session_state:
     params = st.query_params
     st.session_state.page = params.get("p", "home")
     st.session_state.current_exam = params.get("ex", "Research Officer")
     st.session_state.current_subject = params.get("sub", "Statistics")
+    st.session_state.user_answers = {}
+    st.session_state.quiz_submitted = False
 
 def navigate_to(page, exam=None, subject=None):
     st.session_state.page = page
@@ -65,30 +68,35 @@ def navigate_to(page, exam=None, subject=None):
         st.query_params["sub"] = subject
     st.rerun()
 
-# --- 5. DATA (NO SKIPPING) ---
+# --- 5. COMPLETE SYLLABUS DATA (MODULES 1-10) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1-3": "Sampling, Probability, Standard Distributions.",
+            "MODULE 1: SAMPLING (6 marks)": "Random Sampling, Stratified sampling, Ratio/Regression estimator.",
+            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF.",
+            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Normal.",
             "MODULE 4-10": "Estimation, Hypothesis, Regression, Time Series, Index Numbers, Vital Stats."
         }
     },
     "Economics": {
         "Modules": {
-            "Module I: Micro Theory": "Indifference Curve, Consumer's Surplus, Production Function.",
-            "Module II-VII": "Macro, Fiscal, Development, Indian & Kerala Economy, Econometrics."
+            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES).",
+            "Module II-VII": "Macro, Fiscal federalism, Indian Economy, Kerala Economy, Econometrics."
         }
     }
 }
 
+# --- 6. COMPLETE QUIZ DATA (SET 1 & 2) ---
 QUIZ_BANK = {
     "Economics": {
-        "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
-        "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
+        "Module I: Micro Theory (4 marks)": {
+            "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
+            "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
+        }
     }
 }
 
-# --- 6. UI RENDERER ---
+# --- 7. UI RENDERER ---
 page = st.session_state.page
 
 if page == "home":
@@ -101,7 +109,7 @@ elif page == "exam_detail":
     exam = st.session_state.get('current_exam', 'Research Officer')
     st.markdown(f"<div class='welcome-banner'><h3>📍 {exam}</h3></div>", unsafe_allow_html=True)
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
-        if st.button(s, key=f"btn_{s}", use_container_width=True):
+        if st.button(s, key=f"nav_{s}", use_container_width=True):
             navigate_to("subject_options", subject=s)
 
 elif page == "subject_options":
