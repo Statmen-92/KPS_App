@@ -4,7 +4,24 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. CSS FOR STABILITY ---
+# --- 2. GLOBAL MOBILE ZOOM & ORIENTATION FIX ---
+st.markdown("""
+    <script>
+    const fixViewport = () => {
+        var meta = document.querySelector('meta[name="viewport"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.name = 'viewport';
+            document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+    };
+    fixViewport();
+    window.addEventListener('orientationchange', () => { setTimeout(fixViewport, 500); });
+    </script>
+    """, unsafe_allow_html=True)
+
+# --- 3. CUSTOM CSS ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -25,36 +42,45 @@ st.markdown("""
         border-radius: 12px !important;
         font-weight: bold;
         border: 2px solid #28a745 !important;
-        background-color: white !important;
+    }
+    .q-header {
+        background-color: #1e3c72;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        text-align: center;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. ERROR-PROOF SESSION INITIALIZATION ---
-# പേജ് ലോഡ് ചെയ്യുമ്പോൾ തന്നെ എല്ലാ വേരിയബിളുകളും ഉറപ്പാക്കുന്നു
+# --- 4. SAFE SESSION INITIALIZATION (RE-STRUCTURED) ---
+# AttributeError വരാതിരിക്കാൻ എല്ലാ കീകളും ഇവിടെ ഡിഫോൾട്ട് ആയി നൽകുന്നു.
 if 'page' not in st.session_state: st.session_state.page = "home"
 if 'current_exam' not in st.session_state: st.session_state.current_exam = "Research Officer"
 if 'current_subject' not in st.session_state: st.session_state.current_subject = "Statistics"
+if 'user_answers' not in st.session_state: st.session_state.user_answers = {}
+if 'quiz_submitted' not in st.session_state: st.session_state.quiz_submitted = False
 
-# --- 4. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
+# --- 5. COMPLETE SYLLABUS DATA (NO SKIPPING) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling, Stratified sampling, Ratio/Regression estimator.",
+            "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods, Simple random sampling, Stratified sampling, Ratio/Regression estimator.",
             "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF, Characteristic function.",
-            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Exponential, Normal.",
-            "MODULE 4-10": "Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
+            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Exponential, Normal.",
+            "MODULE 4-10": "Sampling Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Statistics."
         }
     },
     "Economics": {
         "Modules": {
             "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES), Welfare Economics.",
-            "Module II-VII": "Macro, Fiscal federalism, Indian Economy, Kerala Economy, Econometrics."
+            "Module II-VII": "Macro, Fiscal federalism, Indian & Kerala Economy, Econometrics."
         }
     }
 }
 
-# --- 5. COMPLETE QUIZ BANK (SET 1 & 2) ---
+# --- 6. COMPLETE QUIZ BANK (SET 1 & 2) ---
 QUIZ_BANK = {
     "Economics": {
         "Module I: Micro Theory (4 marks)": {
@@ -64,15 +90,8 @@ QUIZ_BANK = {
     }
 }
 
-# --- 6. NAVIGATION LOGIC ---
-def navigate(target_page, exam=None, sub=None):
-    st.session_state.page = target_page
-    if exam: st.session_state.current_exam = exam
-    if sub: st.session_state.current_subject = sub
-    st.rerun()
-
 # --- 7. UI RENDERER ---
-# AttributeError തടയാൻ safe access ഉപയോഗിക്കുന്നു
+# AttributeError തടയാൻ .get() ഉപയോഗിക്കുന്നു
 page = st.session_state.get('page', 'home')
 exam = st.session_state.get('current_exam', 'Research Officer')
 subject = st.session_state.get('current_subject', 'Statistics')
@@ -80,30 +99,46 @@ subject = st.session_state.get('current_subject', 'Statistics')
 if page == "home":
     st.markdown("<div class='welcome-banner'><h2>🎓 MATHS-STAT WORLD</h2></div>", unsafe_allow_html=True)
     if st.button("Research Officer", use_container_width=True):
-        navigate("exam_detail", exam="Research Officer")
+        st.session_state.page = "exam_detail"
+        st.rerun()
 
 elif page == "exam_detail":
-    if st.button("⬅ Back Home"): navigate("home")
+    if st.button("⬅ Back Home"):
+        st.session_state.page = "home"
+        st.rerun()
     st.markdown(f"<div class='welcome-banner'><h3>📍 {exam}</h3></div>", unsafe_allow_html=True)
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
         if st.button(s, key=f"btn_{s}", use_container_width=True):
-            navigate("subject_options", sub=s)
+            st.session_state.current_subject = s
+            st.session_state.page = "subject_options"
+            st.rerun()
 
 elif page == "subject_options":
-    if st.button("⬅ Back"): navigate("exam_detail")
+    if st.button("⬅ Back"):
+        st.session_state.page = "exam_detail"
+        st.rerun()
     st.markdown(f"<div class='welcome-banner'><h3>📚 {subject}</h3></div>", unsafe_allow_html=True)
-    if st.button("📖 Syllabus", use_container_width=True): navigate("syllabus_view")
-    if st.button("🎯 Test Practice", use_container_width=True): navigate("quiz_setup")
+    if st.button("📖 Syllabus", use_container_width=True):
+        st.session_state.page = "syllabus_view"
+        st.rerun()
+    if st.button("🎯 Test Practice", use_container_width=True):
+        st.session_state.page = "quiz_setup"
+        st.rerun()
 
 elif page == "syllabus_view":
-    if st.button("⬅ Back"): navigate("subject_options")
+    if st.button("⬅ Back"):
+        st.session_state.page = "subject_options"
+        st.rerun()
     st.markdown(f"<div class='welcome-banner'><h3>📖 {subject} Syllabus</h3></div>", unsafe_allow_html=True)
     data = FULL_SYLLABUS.get(subject, {"Modules": {}})
     for mod, detail in data["Modules"].items():
-        with st.expander(mod): st.write(detail)
+        with st.expander(mod):
+            st.write(detail)
 
 elif page == "quiz_setup":
-    if st.button("⬅ Exit Quiz"): navigate("subject_options")
+    if st.button("⬅ Exit Quiz"):
+        st.session_state.page = "subject_options"
+        st.rerun()
     st.info("ക്വിസ് ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു...")
 
-st.markdown("<br><hr><p style='text-align: center; color: grey;'>© 2026 Maths-Stat World Hub</p>", unsafe_allow_html=True)
+st.markdown("<br><hr><p style='text-align: center;'>© 2026 Maths-Stat World Hub</p>", unsafe_allow_html=True)
