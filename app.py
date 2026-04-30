@@ -4,7 +4,7 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. MOBILE ZOOM & ROTATION SCRIPT ---
+# --- 2. GLOBAL MOBILE ZOOM & ORIENTATION FIX ---
 st.markdown("""
     <script>
     const fixViewport = () => {
@@ -30,32 +30,21 @@ st.markdown("""
     .stApp { background-color: #f0f2f6; }
     .welcome-banner {
         background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 20px;
+        color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px;
     }
     div.stButton > button {
-        height: 75px !important;
-        background-color: white !important;
-        color: #1e3c72 !important;
-        border: 2px solid #28a745 !important;
-        border-radius: 12px !important;
-        font-weight: bold;
+        height: 70px !important; border-radius: 12px !important; font-weight: bold; border: 2px solid #28a745 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. PERSISTENT NAVIGATION (THE REDIRECT FIX) ---
-# URL-ൽ നിന്ന് പഴയ സ്റ്റേറ്റ് റീസ്റ്റോർ ചെയ്യുന്നു
+# --- 4. PERSISTENT NAVIGATION (URL LOCK) ---
+# ഫോൺ തിരിക്കുമ്പോൾ ബ്രൗസർ യുആർഎൽ നോക്കി പേജ് തിരിച്ചുപിടിക്കുന്നു
 if 'page' not in st.session_state:
     params = st.query_params
     st.session_state.page = params.get("p", "home")
     st.session_state.current_exam = params.get("ex", "Research Officer")
     st.session_state.current_subject = params.get("sub", "Statistics")
-    st.session_state.user_answers = {}
-    st.session_state.quiz_submitted = False
 
 def navigate_to(page, exam=None, subject=None):
     st.session_state.page = page
@@ -68,35 +57,29 @@ def navigate_to(page, exam=None, subject=None):
         st.query_params["sub"] = subject
     st.rerun()
 
-# --- 5. COMPLETE SYLLABUS DATA (MODULES 1-10) ---
+# --- 5. DATA (NO SKIPPING) ---
 FULL_SYLLABUS = {
     "Statistics": {
         "Modules": {
-            "MODULE 1: SAMPLING (6 marks)": "Random Sampling, Stratified sampling, Ratio/Regression estimator.",
-            "MODULE 2: PROBABILITY (3 marks)": "Probability measure, Independence, Bayes theorem, CDF, PDF, MGF.",
-            "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Uniform, Bernoulli, Binomial, Poisson, Normal.",
-            "MODULE 4-10": "Estimation, Hypothesis, Regression, Time Series, Index Numbers, Vital Stats."
+            "MODULE 1-10": "Sampling, Probability, Standard Distributions, Estimation, Testing, Regression, Time Series, Index Numbers, Vital Stats."
         }
     },
     "Economics": {
         "Modules": {
-            "Module I: Micro Theory (4 marks)": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES).",
+            "Module I: Micro Theory": "Indifference Curve, Consumer's Surplus, Production Function (Cobb-Douglas, CES).",
             "Module II-VII": "Macro, Fiscal federalism, Indian Economy, Kerala Economy, Econometrics."
         }
     }
 }
 
-# --- 6. COMPLETE QUIZ DATA (SET 1 & 2) ---
 QUIZ_BANK = {
     "Economics": {
-        "Module I: Micro Theory (4 marks)": {
-            "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
-            "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
-        }
+        "Set 1": [(f"Q{i}.png", ans) for i, ans in zip(range(1, 9), ["B", "B", "C", "C", "B", "C", "B", "B"])],
+        "Set 2": [(f"Q{i}.png", ans) for i, ans in zip(range(10, 18), ["C", "B", "C", "B", "C", "C", "B", "B"])]
     }
 }
 
-# --- 7. UI RENDERER ---
+# --- 6. UI RENDERER ---
 page = st.session_state.page
 
 if page == "home":
@@ -106,6 +89,7 @@ if page == "home":
 
 elif page == "exam_detail":
     if st.button("⬅ Back Home"): navigate_to("home")
+    # AttributeError തടയാൻ get() ഉപയോഗിക്കുന്നു
     exam = st.session_state.get('current_exam', 'Research Officer')
     st.markdown(f"<div class='welcome-banner'><h3>📍 {exam}</h3></div>", unsafe_allow_html=True)
     for s in ["Statistics", "Economics", "Mathematics", "Commerce"]:
