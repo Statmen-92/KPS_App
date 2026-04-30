@@ -4,14 +4,24 @@ import os
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="Maths-Stat World Pro", layout="wide", page_icon="🎓")
 
-# --- 2. GLOBAL MOBILE ZOOM FIX ---
-# മൊബൈൽ ബ്രൗസറുകളിൽ എവിടെയും കൈകൊണ്ട് സൂം ചെയ്യാൻ ഇത് സഹായിക്കുന്നു.
+# --- 2. GLOBAL MOBILE ZOOM ENABLER ---
+# മൊബൈൽ ബ്രൗസറുകളിൽ Pinch-to-zoom നിർബന്ധമായും അനുവദിക്കാനുള്ള സ്ക്രിപ്റ്റ്.
 st.markdown("""
     <script>
-    var meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-    document.getElementsByTagName('head')[0].appendChild(meta);
+    const enableZoom = () => {
+        let meta = document.querySelector('meta[name="viewport"]');
+        if (meta) {
+            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+        } else {
+            meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+            document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+    };
+    enableZoom();
+    // ആപ്പ് ലോഡ് ചെയ്യുമ്പോഴും പേജ് മാറുമ്പോഴും ഇത് ആക്റ്റീവ് ആക്കാൻ
+    document.addEventListener('DOMContentLoaded', enableZoom);
     </script>
     """, unsafe_allow_html=True)
 
@@ -99,12 +109,12 @@ FULL_SYLLABUS = {
             "MODULE 1: SAMPLING (6 marks)": "Random Sampling methods. Simple random sampling with and without replacement. Stratified sampling. Ratio estimator and regression estimator.",
             "MODULE 2: PROBABILITY AND RANDOM VARIABLES (3 marks)": "Probability measure, probability space. Independence of events, conditional probability and Bayes theorem. CDF, PDF, PGF, MGF, Characteristic function. Sequences of random variables, convergence.",
             "MODULE 3: STANDARD DISTRIBUTIONS (2 marks)": "Applications of standard discrete distributions- Uniform, Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Hypergeometric. Standard continuous distributions: Uniform, Exponential, Weibull, Gamma and normal.",
-            "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Distribution of the mean and variance of a random sample from normal population, Chi-square, t, and F distributions.",
-            "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Minimal Sufficient Statistic, Completeness. Rao-Blackwell theorem, Lehman-Scheffe theorem, Fisher's information measure, Cramer- Rao inequality.",
-            "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Fundamental concepts, tests based on Normal, t, chi-square and F distributions, Parametric and Non-parametric tests.",
-            "MODULE 7: LINEAR REGRESSION (2 marks)": "Inference on simple linear regression models. Properties of least square estimators. Significance test and confidence intervals.",
-            "MODULE 8: TIME SERIES (2 marks)": "Components of Time series, trend and seasonal fluctuations, ACF and PACF, ARMA and ARIMA models.",
-            "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers. Consumer price index number.",
+            "MODULE 4: SAMPLING DISTRIBUTIONS (2 marks)": "Distribution of the mean and variance of a random sample from normal population, Chi-square, t, and F distributions (both central and non-central).",
+            "MODULE 5: ESTIMATION (3 marks)": "Point estimation, Minimal Sufficient Statistic, Completeness. Rao-Blackwell theorem, Lehman-Scheffe theorem, Fisher's information measure, Cramer- Rao inequality. Maximum likelihood, method of moments.",
+            "MODULE 6: TESTING OF HYPOTHESIS (3 marks)": "Fundamental concepts, tests based on Normal, t, chi-square and F distributions, Kolmogorov-Smirnov, Wald Wolfowitz run test, Mann-Whitney Wilcoxon, Kruskal-Wallis, Friedman test.",
+            "MODULE 7: LINEAR REGRESSION (2 marks)": "Inference on simple linear regression models. Properties of least square estimators. Significance test and confidence intervals. Coefficient of determination. Multiple linear regression models, Problem of multicollinearity. Simple, partial and multiple correlation.",
+            "MODULE 8: TIME SERIES (2 marks)": "Components of Time series, trend and seasonal fluctuations, ACF and PACF, Moving Average (MA) and Auto Regressive (AR), ARMA and ARIMA models.",
+            "MODULE 9: INDEX NUMBERS (1 mark)": "Laspeyre's, Paache's and Fisher's index numbers. Consumer price index number. Base shifting, splicing and deflating index numbers.",
             "MODULE 10: VITAL STATISTICS (1 mark)": "Measurement of Fertility: CBR, GFR, ASBR, TFR. Measurement of Mortality: CDR, Standardized death rates, ASDR."
         }
     },
@@ -120,8 +130,8 @@ FULL_SYLLABUS = {
             "Module VII: Basic Econometrics (3 marks)": "Population and Sample Regression Functions- Goodness of Fit- Basic assumptions of CLRM- Gauss Markov's Theorem."
         }
     },
-    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Functional Analysis, Abstract Algebra, Real Analysis, Topology, Complex Analysis, Differential Equations." } },
-    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Financial Accounting, Partnership, Cost Accounting, Direct Taxation, GST, Managerial Economics, Legal Framework." } }
+    "Mathematics": { "Total Marks": 25, "Modules": { "Unit I-VII": "Linear Algebra, Real Analysis, Topology, etc." } },
+    "Commerce": { "Total Marks": 25, "Modules": { "Module 1-10": "Accounting, Taxation, GST, etc." } }
 }
 
 # --- 6. COMPLETE QUIZ BANK ---
@@ -223,7 +233,7 @@ elif st.session_state.page == "quiz_setup":
                     st.image(q_img, use_container_width=True)
                 
                 choice = st.radio(f"Answer Q{i+1}:", ["A", "B", "C", "D"], 
-                                  index=None, key=f"quiz_radio_{curr_id}_{i}", horizontal=True)
+                                  index=None, key=f"radio_{curr_id}_{i}", horizontal=True)
                 if choice: st.session_state.user_answers[i] = choice
                 st.markdown("<br><hr><br>", unsafe_allow_html=True)
 
@@ -236,7 +246,7 @@ elif st.session_state.page == "quiz_setup":
                 u_ans = st.session_state.user_answers.get(i, "N/A")
                 with st.expander(f"Question {i+1}: {'✅' if u_ans == cor else '❌'}"):
                     if os.path.exists(q_img): st.image(q_img, use_container_width=True)
-                    st.success(f"Correct Answer: {cor} | Your Answer: {u_ans}")
+                    st.success(f"Correct: {cor} | Yours: {u_ans}")
                     if os.path.exists(e_img): st.image(e_img, use_container_width=True)
             if st.button("🔄 Restart Practice", use_container_width=True): 
                 st.session_state.quiz_submitted = False; st.session_state.user_answers = {}; st.rerun()
